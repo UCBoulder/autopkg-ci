@@ -1,4 +1,5 @@
 https://github.com/UCBoulder/autopkg-recipes.git
+https://github.com/hjuutilainen/autopkg-virustotalanalyzer.git
 apfelwerk-recipes
 cgerke-recipes
 chilcote-recipes
