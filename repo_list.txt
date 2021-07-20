@@ -1,4 +1,4 @@
-git@github.com:UCBoulder/autopkg-recipes.git
+https://github.com/UCBoulder/autopkg-recipes.git
 apfelwerk-recipes
 cgerke-recipes
 chilcote-recipes
