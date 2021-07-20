@@ -102,6 +102,13 @@ jobs:
         RECIPE: ${{ github.event.inputs.recipe }}
         SLACK_WEBHOOK_TOKEN: ${{ secrets.autopkg_slack_token }}
 
+
+    - name: Test AutoPkg
+      run: |
+        ls -lah ~/Library/AutoPkg/Cache/*
+
+
+
     - name: Create Trust Info pull request
       if: env.TITLE
       run: |
