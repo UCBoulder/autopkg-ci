@@ -43,7 +43,7 @@ jobs:
         /usr/libexec/PlistBuddy -c "Add :JSS_REPOS array" com.github.autopkg
         /usr/libexec/PlistBuddy -c "Add :JSS_REPOS:0 dict" com.github.autopkg.plist
         /usr/libexec/PlistBuddy -c "Add :JSS_REPOS:0:type string CDP" com.github.autopkg.plist
-        defaults read com.github.autopkg.plist
+        defaults read com.github.autopkg.plist JSS_REPOS
         
     - name: Configure Git
       run: |
