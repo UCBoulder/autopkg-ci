@@ -48,6 +48,7 @@ jobs:
       run: |
         git config --global user.name "runner"
         git config --global user.email "runner@githubactions.local"
+        git config credential.helper store
         echo "https://${{ secrets.AUTOPKG_GITHUB_USER }}:${{ secrets.AUTOPKG_GITHUB_TOKEN }}@github.com" > ~/.git-credentials
 
 
