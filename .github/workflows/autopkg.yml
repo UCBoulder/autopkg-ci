@@ -47,8 +47,9 @@ jobs:
         
     - name: Test AutoPkg
       run: |
-        defaults read com.github.autopkg.plist JSS_REPOS
         cat ~/Library/Preferences/com.github.autopkg.plist
+        defaults read com.github.autopkg.plist
+        defaults read com.github.autopkg.plist JSS_REPOS
         
     - name: Configure Git
       run: |
