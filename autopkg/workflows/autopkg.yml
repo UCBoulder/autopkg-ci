@@ -1,4 +1,4 @@
-name: AutoPkg run
+name: Autopkg run
 
 on:
   watch:
@@ -14,70 +14,57 @@ on:
 jobs:
   AutoPkg:
     runs-on: macos-latest
-    timeout-minutes: 10 # Keeps your builds from running too long
+    timeout-minutes: 90 # Keeps your builds from running too long
     steps:
     - name: Checkout AutoPkg recipes
       uses: actions/checkout@28c7f3d2b5162b5ddd3dfd9a45aa55eaf396478b # Pin SHA1 hash instead of version
       with:
         fetch-depth: 1
 
+    - name: Install python dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        pip3 install -r requirements.txt
+
+    - name: Install Munki
+      run: |
+        curl -L https://github.com/munki/munki/releases/download/v5.2.3/munkitools-5.2.3.4295.pkg --output /tmp/munkitools.pkg
+        sudo installer -pkg /tmp/munkitools.pkg -target /
+
     - name: Install AutoPkg
       run: |
         curl -L https://github.com/autopkg/autopkg/releases/download/v2.3.1/autopkg-2.3.1.pkg --output /tmp/autopkg.pkg
         sudo installer -pkg /tmp/autopkg.pkg -target /
-        
-    - name: Install jss-importer 
-      run: |
-        curl -L https://github.com/jssimporter/JSSImporter/releases/download/v1.1.5/jssimporter-1.1.5.pkg --output /tmp/jssimporter.pkg
-        sudo installer -pkg /tmp/jssimporter.pkg -target /
-                
+
+    - name: Checkout your Munki LFS repo
+      uses: actions/checkout@28c7f3d2b5162b5ddd3dfd9a45aa55eaf396478b
+      with:
+        repository: replace_with_your_munki_repo
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 1
+        ref: refs/heads/master
+        path: munki_repo
+
     - name: Configure AutoPkg and Git
       run: |
         defaults write com.github.autopkg RECIPE_OVERRIDE_DIRS "$(pwd)"/overrides/
         defaults write com.github.autopkg RECIPE_REPO_DIR "$(pwd)"/repos/
         defaults write com.github.autopkg FAIL_RECIPES_WITHOUT_TRUST_INFO -bool YES
-        defaults write com.github.autopkg JSS_URL "${{ secrets.JSS_URL }}"
-        defaults write com.github.autopkg API_USERNAME "${{ secrets.JSS_API_USERNAME }}"
-        defaults write com.github.autopkg API_PASSWORD "${{ secrets.JSS_API_PASSWORD }}"
-        defaults write com.github.autopkg GITHUB_TOKEN "${{ secrets.AUTOPKG_GITHUB_TOKEN }}"
-        /usr/libexec/PlistBuddy -c "Add :JSS_REPOS array" com.github.autopkg
-        /usr/libexec/PlistBuddy -c "Add :JSS_REPOS:0 dict" com.github.autopkg.plist
-        /usr/libexec/PlistBuddy -c "Add :JSS_REPOS:0:type string CDP" com.github.autopkg.plist
+        defaults write com.github.autopkg MUNKI_REPO "$GITHUB_WORKSPACE"/munki_repo
+        defaults write com.github.autopkg GITHUB_TOKEN "${{ secrets.GITHUB_TOKEN }}"
         git config --global user.name "runner"
         git config --global user.email "runner@githubactions.local"
 
     - name: Add AutoPkg repos
       run: |
-        eval $(ssh-agent)
-        echo "${{ secrets.AUTOPKG_GITHUB_SSH_PRIV }}" > ~/.ssh/privKey
-        chmod 700 ~/.ssh
-        chmod 600 ~/.ssh/privKey
-        ssh-add -k ~/.ssh/privKey
         for repo in $(cat repo_list.txt); do autopkg repo-add "$repo" && autopkg repo-update "$repo"; done
-      with: 
-        token: ${{ secrets.AUTOPKG_GITHUB_TOKEN }}
 
-    - name: Checkout your autopkg recipe repo
-      uses: actions/checkout@28c7f3d2b5162b5ddd3dfd9a45aa55eaf396478b
-      with:
-        repository: UCBoulder/autopkg-recipes
-        token: ${{ secrets.AUTOPKG_GITHUB_TOKEN }}
-        fetch-depth: 1
-        ref: refs/heads/main
-        path: munki_repo
-        
-    - name: Checkout your autopkg override repo
-      uses: actions/checkout@28c7f3d2b5162b5ddd3dfd9a45aa55eaf396478b
-      with:
-        repository: UCBoulder/autopkgRecipeOverrides
-        token: ${{ secrets.AUTOPKG_GITHUB_TOKEN }}
-        fetch-depth: 1
-        ref: refs/heads/main
-        path: overrides
+    - name: Run makecatalogs
+      run: |
+        /usr/local/munki/makecatalogs munki_repo
 
     - name: Run AutoPkg
       run: |
-        pip3 install requests
         python3 autopkg_tools.py -l recipe_list.json
         if [ -f pull_request_title ]; then
         echo "TITLE=$(cat pull_request_title)" >> $GITHUB_ENV
