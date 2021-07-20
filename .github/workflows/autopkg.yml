@@ -40,9 +40,9 @@ jobs:
         defaults write com.github.autopkg API_USERNAME "${{ secrets.JSS_API_USERNAME }}"
         defaults write com.github.autopkg API_PASSWORD "${{ secrets.JSS_API_PASSWORD }}"
         defaults write com.github.autopkg GITHUB_TOKEN "${{ secrets.AUTOPKG_GITHUB_TOKEN }}"
-        /usr/libexec/PlistBuddy -c "Add :JSS_REPOS array" com.github.autopkg.plist
-        /usr/libexec/PlistBuddy -c "Add :JSS_REPOS:0 dict" com.github.autopkg.plist
-        /usr/libexec/PlistBuddy -c "Add :JSS_REPOS:0:type string CDP" com.github.autopkg.plist
+        /usr/libexec/PlistBuddy -c "Add :JSS_REPOS array" ~/Library/Preferences/com.github.autopkg.plist
+        /usr/libexec/PlistBuddy -c "Add :JSS_REPOS:0 dict" ~/Library/Preferences/com.github.autopkg.plist
+        /usr/libexec/PlistBuddy -c "Add :JSS_REPOS:0:type string CDP" ~/Library/Preferences/com.github.autopkg.plist
         
         
     - name: Test AutoPkg
