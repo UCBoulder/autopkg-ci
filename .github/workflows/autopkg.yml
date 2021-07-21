@@ -14,7 +14,7 @@ on:
 jobs:
   AutoPkg:
     runs-on: macos-latest
-    timeout-minutes: 90 # Keeps your builds from running too long
+    timeout-minutes: 20 # Keeps your builds from running too long
     steps:
     - name: Checkout AutoPkg recipes
       uses: actions/checkout@28c7f3d2b5162b5ddd3dfd9a45aa55eaf396478b # Pin SHA1 hash instead of version
@@ -65,7 +65,21 @@ jobs:
         chmod 700 ~/.ssh
         chmod 600 ~/.ssh/privKey
         ssh-add -k ~/.ssh/privKey
-             
+
+    - name: Setup Signing Key
+      run: |
+        echo "${{ secrets.SIGNING_CERT_P112 }}" | base64 --decode --output cert.p12
+        KEYCHAIN_PATH=temp.keychain
+        KEYCHAIN_PASS=$(echo "$(date)""$RANDOM" | base64)
+        security create-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
+        security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+        security unlock-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
+        security import cert.p12 -P ${{ secrets.SIGNING_CERT_PASS }} -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+        security list-keychain -d user -s "$KEYCHAIN_PATH"
+        security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
+
+        
+        
     - name: Add AutoPkg repos
       run: |
         for repo in $(cat repo_list.txt); do autopkg repo-add "$repo" && autopkg repo-update "$repo"; done    
@@ -90,15 +104,6 @@ jobs:
 
     - name: Run AutoPkg
       run: |
-        set -e
-        echo "${{ secrets.SIGNING_CERT_P112 }}" | base64 --decode --output cert.p12
-        KEYCHAIN_PATH=temp.keychain
-        KEYCHAIN_PASS=$(echo "$(date)""$RANDOM" | base64)
-        security create-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
-        security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
-        security unlock-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
-        security import cert.p12 -P ${{ secrets.SIGNING_CERT_PASS }} -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
-        security list-keychain -d user -s "$KEYCHAIN_PATH"
         pip3 install requests
         python3 autopkg_tools.py -l recipe_list.json
         if [ -f pull_request_title ]; then
