@@ -86,7 +86,7 @@ jobs:
     - name: Checkout your autopkg cache repo
       uses: actions/checkout@28c7f3d2b5162b5ddd3dfd9a45aa55eaf396478b
       with:
-        repository: UCBoulder/jamf-autopkg-cache
+        repository: ${{ secrets.AUTOPKG_CACHE_REPO }}
         token: ${{ secrets.AUTOPKG_GITHUB_TOKEN }}
         fetch-depth: 1
         ref: refs/heads/main
@@ -118,7 +118,7 @@ jobs:
 
     - name: Test AutoPkg
       run: |
-        ls -lah ~/Library/AutoPkg/Cache/*
+        ls -lah $(defaults read com.github.autopkg CACHE_DIR)
 
 
 
