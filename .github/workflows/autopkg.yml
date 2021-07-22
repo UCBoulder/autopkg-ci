@@ -33,8 +33,9 @@ jobs:
         
     - name: Homebrew install & curl update
       run: |
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         brew install curl
+        which -a curl
+        /usr/bin/curl --version
         /usr/local/opt/curl/bin/curl --version
                         
     - name:  AutoPkg Configuration
