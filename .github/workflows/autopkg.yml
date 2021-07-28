@@ -30,11 +30,6 @@ jobs:
       run: |
         curl -L https://github.com/jssimporter/JSSImporter/releases/download/v1.1.5/jssimporter-1.1.5.pkg --output /tmp/jssimporter.pkg
         sudo installer -pkg /tmp/jssimporter.pkg -target /
-        
-    - name: Homebrew install & curl update
-      run: |
-        export PATH="/usr/local/opt/curl/bin/:${PATH}"
-        curl --version
                         
     - name:  AutoPkg Configuration
       run: |
@@ -107,6 +102,7 @@ jobs:
 
     - name: Run AutoPkg
       run: |
+        export PATH="/usr/local/opt/curl/bin/:${PATH}"
         pip3 install requests
         python3 autopkg_tools.py -l recipe_list.json
         if [ -f pull_request_title ]; then

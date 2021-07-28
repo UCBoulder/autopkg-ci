@@ -27,7 +27,7 @@ from datetime import datetime
 
 
 DEBUG = False
-SLACK_WEBHOOK = os.environ.get("SLACK_WEBHOOK_TOKEN", None)
+TEAMS_WEBHOOK = os.environ.get("TEAMS_WEBHOOK_URL", None)
 MUNKI_REPO = os.path.join(os.getenv("GITHUB_WORKSPACE", "/tmp/"), "munki_repo")
 OVERRIDES_DIR = os.path.relpath("overrides/")
 RECIPE_TO_RUN = os.environ.get("RECIPE", None)
@@ -261,13 +261,13 @@ def import_icons():
     git_run(["push", "--set-upstream", "origin", f"{branch_name}"])
 
 
-def slack_alert(recipe, opts):
+def teams_alert(recipe, opts):
     if opts.debug:
-        print("Debug: skipping Slack notification - debug is enabled!")
+        print("Debug: skipping Teams notification - debug is enabled!")
         return
 
-    if SLACK_WEBHOOK is None:
-        print("Skipping slack notification - webhook is missing!")
+    if TEAMS_WEBHOOK is None:
+        print("Skipping Teams notification - webhook is missing!")
         return
 
     if not recipe.verified:
@@ -298,7 +298,7 @@ def slack_alert(recipe, opts):
         return
 
     response = requests.post(
-        SLACK_WEBHOOK,
+        TEAMS_WEBHOOK,
         data=json.dumps(
             {
                 "attachments": [
@@ -317,7 +317,7 @@ def slack_alert(recipe, opts):
     )
     if response.status_code != 200:
         raise ValueError(
-            "Request to slack returned an error %s, the response is:\n%s"
+            "Request to Teams returned an error %s, the response is:\n%s"
             % (response.status_code, response.text)
         )
 
@@ -337,7 +337,7 @@ def main():
         "-d",
         "--debug",
         action="store_true",
-        help="Disables sending Slack alerts and adds more verbosity to output.",
+        help="Disables sending Teams alerts and adds more verbosity to output.",
     )
     parser.add_option(
         "-v",
@@ -366,6 +366,7 @@ def main():
     recipes = parse_recipes(recipes)
     for recipe in recipes:
         handle_recipe(recipe, opts)
+        teams_alert(recipe, opts)
         if not opts.disable_verification:
             if not recipe.verified:
                 failures.append(recipe)
