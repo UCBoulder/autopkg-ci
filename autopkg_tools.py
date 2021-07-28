@@ -262,6 +262,7 @@ def import_icons():
 
 
 def teams_alert(recipe, opts):
+	print("Testing...")
     if opts.debug:
         print("Debug: skipping Teams notification - debug is enabled!")
         return
