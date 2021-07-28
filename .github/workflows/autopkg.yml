@@ -113,7 +113,7 @@ jobs:
         fi
       env:
         RECIPE: ${{ github.event.inputs.recipe }}
-        SLACK_WEBHOOK_TOKEN: ${{ secrets.autopkg_slack_token }}
+        TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
 
     - name: Test AutoPkg
       run: |
