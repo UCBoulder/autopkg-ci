@@ -330,7 +330,7 @@ def teams_alert(recipe, opts):
                                                                    "facts": [
                                                                             {
                                                                                "title": "Package Name:",
-                                                                               "value": recipe.results["imported"][0]["Package"]
+                                                                               "value": recipe.results["imported"][0]["Package"],
                                                                                "wrap": "false"
                                                                             },
                                                                             {
