@@ -208,7 +208,7 @@ def handle_recipe(recipe, opts):
     if recipe.verified in (True, None):
         recipe.run()
         if recipe.results["imported"]:
-            checkout(recipe.branch)
+            #checkout(recipe.branch)
             for imported in recipe.results["imported"]:
                 git_run(["add", f"'pkgs/{ imported['pkg_repo_path'] }'"])
                 git_run(["add", f"'pkgsinfo/{ imported['pkginfo_path'] }'"])
