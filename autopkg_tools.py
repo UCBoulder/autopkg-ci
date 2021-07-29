@@ -327,12 +327,11 @@ def teams_alert(recipe, opts):
                                                        "items": [
                                                                 {
                                                                    "type": "FactSet",
-                                                                   "width": "stretch",
                                                                    "facts": [
                                                                             {
                                                                                "title": "Package Name:",
                                                                                "value": recipe.results["imported"][0]["Package"],
-                                                                               "wrap": "false"
+                                                                               "wrap": False
                                                                             },
                                                                             {
                                                                                "title": "Version:",
