@@ -156,8 +156,8 @@ class Recipe(object):
             self.results = self._parse_report(report)
             if not self.results["failed"] and not self.error and self.updated_version:
                 self.updated = True
-
-         return self.results
+                
+        return self.results
 
 
 ### GIT FUNCTIONS
