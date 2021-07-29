@@ -290,9 +290,8 @@ def teams_alert(recipe, opts):
     elif recipe.updated:
         task_title = "Imported %s %s" % (recipe.name, str(recipe.updated_version))
         task_description = (
-            "*Catalogs:* %s \n" % recipe.results["imported"][0]["catalogs"]
-            + "*Package Path:* `%s` \n" % recipe.results["imported"][0]["pkg_repo_path"]
-            + "*Pkginfo Path:* `%s` \n" % recipe.results["imported"][0]["pkginfo_path"]
+            "*Package Name:* %s \n" % recipe.results["imported"][0]["Package"]
+            + "*Policy Name:* `%s` \n" % recipe.results["imported"][0]["Policy"]
         )
     else:
         # Also no updates
