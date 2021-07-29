@@ -288,7 +288,7 @@ def teams_alert(recipe, opts):
                 # Just no updates
                 return
     elif recipe.updated:
-    	task_title = "Uploaded %s to Jamf Pro" % recipe.results["imported"][0]["Package"]
+        task_title = "Uploaded %s to Jamf Pro" % recipe.results["imported"][0]["Package"]
         task_description = (
             "*Package Version:* %s \n" % str(recipe.updated_version)
             + "*Policy Name:* `%s` \n" % recipe.results["imported"][0]["Policy"]
@@ -338,7 +338,7 @@ def teams_alert(recipe, opts):
                              "items": [
                                       {
                                          "type": "FactSet",
-								         "facts": [
+                                         "facts": [
                                                   {
                                                      "title": "Package Name:",
                                                      "value": recipe.results["imported"][0]["Package"]
