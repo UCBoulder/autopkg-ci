@@ -288,7 +288,6 @@ def teams_alert(recipe, opts):
                 # Just no updates
                 return
     elif recipe.updated:
-        task_title = 
         task_description = (
             "Imported %s %s \n" % (recipe.name, str(recipe.updated_version))
             + "*Package Name:* %s \n" % recipe.results["imported"][0]["Package"]
