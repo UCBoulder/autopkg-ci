@@ -119,7 +119,7 @@ class Recipe(object):
             )
             imported_items.extend(jss_importer_results.get("data_rows", []))
 
-        return {"Uploaded": imported_items, "failed": failed_items}
+        return {"imported": imported_items, "failed": failed_items}
 
     def run(self):
         if self.verified == False:
@@ -140,7 +140,7 @@ class Recipe(object):
                     "-v",
                     "--post",
                     "io.github.hjuutilainen.VirusTotalAnalyzer/VirusTotalAnalyzer",
-                    "--report-plist",
+                    "--report-plist",	
                     report,
                 ]
                 cmd = " ".join(cmd)
