@@ -140,7 +140,7 @@ class Recipe(object):
                     "-v",
                     "--post",
                     "io.github.hjuutilainen.VirusTotalAnalyzer/VirusTotalAnalyzer",
-                    "--report-plist",	
+                    "--report-plist",
                     report,
                 ]
                 cmd = " ".join(cmd)
@@ -156,7 +156,7 @@ class Recipe(object):
             self.results = self._parse_report(report)
             if not self.results["failed"] and not self.error and self.updated_version:
                 self.updated = True
-                
+
         return self.results
 
 
@@ -288,9 +288,9 @@ def teams_alert(recipe, opts):
                 # Just no updates
                 return
     elif recipe.updated:
+    	task_title = "Uploaded %s to Jamf Pro" % recipe.results["imported"][0]["Package"]
         task_description = (
-            "Imported %s %s \n" % (recipe.name, str(recipe.updated_version))
-            + "*Package Name:* %s \n" % recipe.results["imported"][0]["Package"]
+            "*Package Version:* %s \n" % str(recipe.updated_version)
             + "*Policy Name:* `%s` \n" % recipe.results["imported"][0]["Policy"]
         )
     else:
@@ -301,8 +301,67 @@ def teams_alert(recipe, opts):
         TEAMS_WEBHOOK,
         data=json.dumps(
             {
-                    "text": task_description
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "type": "AdaptiveCard",
+                    "version": "1.0",
+                    "body": [
+                            {
+                             "type": "Container",
+                             "items":  [
+                                       {
+                                          "type": "TextBlock",
+                                          "text": "A new package has been uploaded to Jamf Pro",
+                                          "weight": "bolder",
+                                          "size": "medium"
+                                       },
+                                       {
+                                          "type": "ColumnSet",
+                                          "columns": [
+                                                     {
+                                                        "type": "Column",
+                                                        "width": "stretch",
+                                                        "items": [
+                                                                 {
+                                                                   "type": "TextBlock",
+                                                                   "text": "AutoPKG CI",
+                                                                   "weight": "bolder",
+                                                                   "wrap": true
+                                                                 }
+                                                                 ]
+                                                    }
+                                                    ]
+                                       }
+                                       ]
+                            },
+                            {
+                             "type": "Container",
+                             "items": [
+                                      {
+                                         "type": "FactSet",
+								         "facts": [
+                                                  {
+                                                     "title": "Package Name:",
+                                                     "value": recipe.results["imported"][0]["Package"]
+                                                  },
+                                                  {
+                                                     "title": "Version:",
+                                                     "value": str(recipe.updated_version)
+                                                  },
+                                                  {
+                                                     "title": "Policy Name:",
+                                                     "value": recipe.results["imported"][0]["Policy"]
+                                                  },
+                                                  {
+                                                     "title": "Groups:",
+                                                     "value": recipe.results["imported"][0]["Groups"]
+                                                  }
+                                                  ]
+                                      }
+                                      ]
+                            }
+                            ]
             }
+
         ),
         headers={"Content-Type": "application/json"},
     )
