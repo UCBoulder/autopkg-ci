@@ -207,18 +207,18 @@ def handle_recipe(recipe, opts):
             recipe.update_trust_info()
     if recipe.verified in (True, None):
         recipe.run()
-        if recipe.results["imported"]:
+        #if recipe.results["imported"]:
             #checkout(recipe.branch)
-            for imported in recipe.results["imported"]:
-                git_run(["add", f"'pkgs/{ imported['pkg_repo_path'] }'"])
-                git_run(["add", f"'pkgsinfo/{ imported['pkginfo_path'] }'"])
-            git_run(
-                [
-                    "commit",
-                    "-m",
-                    f"'Updated { recipe.name } to { recipe.updated_version }'",
-                ]
-            )
+            #for imported in recipe.results["imported"]:
+               # git_run(["add", f"'pkgs/{ imported['pkg_repo_path'] }'"])
+                #git_run(["add", f"'pkgsinfo/{ imported['pkginfo_path'] }'"])
+            #git_run(
+            #    [
+            #        "commit",
+            #        "-m",
+            #        f"'Updated { recipe.name } to { recipe.updated_version }'",
+            #    ]
+            #)
             #git_run(["push", "--set-upstream", "origin", recipe.branch])
     return recipe
 
