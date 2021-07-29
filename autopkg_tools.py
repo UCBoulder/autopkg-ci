@@ -219,7 +219,7 @@ def handle_recipe(recipe, opts):
                     f"'Updated { recipe.name } to { recipe.updated_version }'",
                 ]
             )
-            git_run(["push", "--set-upstream", "origin", recipe.branch])
+            #git_run(["push", "--set-upstream", "origin", recipe.branch])
     return recipe
 
 
