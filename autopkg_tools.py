@@ -114,12 +114,12 @@ class Recipe(object):
         imported_items = []
         if report_data["summary_results"]:
             # This means something happened
-            munki_results = report_data["summary_results"].get(
-                "munki_importer_summary_result", {}
+            jss_importer_results = report_data["summary_results"].get(
+                "jss_importer_summary_result", {}
             )
-            imported_items.extend(munki_results.get("data_rows", []))
+            imported_items.extend(jss_importer_results.get("data_rows", []))
 
-        return {"imported": imported_items, "failed": failed_items}
+        return {"Uploaded": imported_items, "failed": failed_items}
 
     def run(self):
         if self.verified == False:
@@ -156,13 +156,8 @@ class Recipe(object):
             self.results = self._parse_report(report)
             if not self.results["failed"] and not self.error and self.updated_version:
                 self.updated = True
-			cmd = [
-				"/bin/cat",
-				report
-			]
-			cmd = " ".join(cmd)
-			subprocess.check_call(cmd, shell=True)
-        return self.results
+
+         return self.results
 
 
 ### GIT FUNCTIONS
