@@ -288,9 +288,10 @@ def teams_alert(recipe, opts):
                 # Just no updates
                 return
     elif recipe.updated:
-        task_title = "Imported %s %s" % (recipe.name, str(recipe.updated_version))
+        task_title = 
         task_description = (
-            "*Package Name:* %s \n" % recipe.results["imported"][0]["Package"]
+            "Imported %s %s \n" % (recipe.name, str(recipe.updated_version))
+            + "*Package Name:* %s \n" % recipe.results["imported"][0]["Package"]
             + "*Policy Name:* `%s` \n" % recipe.results["imported"][0]["Policy"]
         )
     else:
@@ -301,16 +302,7 @@ def teams_alert(recipe, opts):
         TEAMS_WEBHOOK,
         data=json.dumps(
             {
-                "attachments": [
-                    {
-                        "username": "Autopkg",
-                        "as_user": True,
-                        "title": task_title,
-                        "color": "warning" if not recipe.verified else "good" if not recipe.error else "danger",
-                        "text": task_description,
-                        "mrkdwn_in": ["text"],
-                    }
-                ]
+                    "text": task_description
             }
         ),
         headers={"Content-Type": "application/json"},
