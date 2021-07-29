@@ -324,8 +324,7 @@ def teams_alert(recipe, opts):
                                                                  {
                                                                    "type": "TextBlock",
                                                                    "text": "AutoPKG CI",
-                                                                   "weight": "bolder",
-                                                                   "wrap": true
+                                                                   "weight": "bolder"
                                                                  }
                                                                  ]
                                                     }
