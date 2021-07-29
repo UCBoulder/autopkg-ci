@@ -262,7 +262,7 @@ def import_icons():
 
 
 def teams_alert(recipe, opts):
-    print("Testing...")
+    teams_data=""
     if opts.debug:
         print("Debug: skipping Teams notification - debug is enabled!")
         return
@@ -319,22 +319,6 @@ def teams_alert(recipe, opts):
                                                                     "text": "A new package has been uploaded to Jamf Pro",
                                                                     "weight": "bolder",
                                                                     "size": "medium"
-                                                                 },
-                                                                 {
-                                                                    "type": "ColumnSet",
-                                                                    "columns": [
-                                                                               {
-                                                                                  "type": "Column",
-                                                                                  "width": "stretch",
-                                                                                  "items": [
-                                                                                           {
-                                                                                             "type": "TextBlock",
-                                                                                             "text": "AutoPKG CI",
-                                                                                             "weight": "bolder"
-                                                                                           }
-                                                                                           ]
-                                                                              }
-                                                                              ]
                                                                  }
                                                                  ]
                                                       },
@@ -347,6 +331,7 @@ def teams_alert(recipe, opts):
                                                                             {
                                                                                "title": "Package Name:",
                                                                                "value": recipe.results["imported"][0]["Package"]
+                                                                               "wrap": "false"
                                                                             },
                                                                             {
                                                                                "title": "Version:",
