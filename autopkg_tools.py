@@ -66,7 +66,7 @@ class Recipe(object):
         if not self.results or not self.results["imported"]:
             return None
 
-        return self.results["imported"][0]["version"].strip().replace(" ", "")
+        return self.results["imported"][0]["Version"].strip().replace(" ", "")
 
     @property
     def name(self):
