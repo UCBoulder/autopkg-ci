@@ -301,66 +301,74 @@ def teams_alert(recipe, opts):
         TEAMS_WEBHOOK,
         data=json.dumps(
             {
-                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                    "type": "AdaptiveCard",
-                    "version": "1.0",
-                    "body": [
+               "type":"message",
+               "attachments":[
                             {
-                             "type": "Container",
-                             "items":  [
-                                       {
-                                          "type": "TextBlock",
-                                          "text": "A new package has been uploaded to Jamf Pro",
-                                          "weight": "bolder",
-                                          "size": "medium"
-                                       },
-                                       {
-                                          "type": "ColumnSet",
-                                          "columns": [
-                                                     {
-                                                        "type": "Column",
-                                                        "width": "stretch",
-                                                        "items": [
+                               "contentType":"application/vnd.microsoft.card.adaptive",
+                               "contentUrl":"null",
+                               "content":{        
+                                            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                                            "type": "AdaptiveCard",
+                                            "version": "1.2",
+                                            "body": [
+                                                    {
+                                                       "type": "Container",
+                                                       "items":  [
                                                                  {
-                                                                   "type": "TextBlock",
-                                                                   "text": "AutoPKG CI",
-                                                                   "weight": "bolder"
+                                                                    "type": "TextBlock",
+                                                                    "text": "A new package has been uploaded to Jamf Pro",
+                                                                    "weight": "bolder",
+                                                                    "size": "medium"
+                                                                 },
+                                                                 {
+                                                                    "type": "ColumnSet",
+                                                                    "columns": [
+                                                                               {
+                                                                                  "type": "Column",
+                                                                                  "width": "stretch",
+                                                                                  "items": [
+                                                                                           {
+                                                                                             "type": "TextBlock",
+                                                                                             "text": "AutoPKG CI",
+                                                                                             "weight": "bolder"
+                                                                                           }
+                                                                                           ]
+                                                                              }
+                                                                              ]
                                                                  }
                                                                  ]
-                                                    }
-                                                    ]
-                                       }
-                                       ]
-                            },
-                            {
-                             "type": "Container",
-                             "items": [
-                                      {
-                                         "type": "FactSet",
-                                         "facts": [
-                                                  {
-                                                     "title": "Package Name:",
-                                                     "value": recipe.results["imported"][0]["Package"]
-                                                  },
-                                                  {
-                                                     "title": "Version:",
-                                                     "value": str(recipe.updated_version)
-                                                  },
-                                                  {
-                                                     "title": "Policy Name:",
-                                                     "value": recipe.results["imported"][0]["Policy"]
-                                                  },
-                                                  {
-                                                     "title": "Groups:",
-                                                     "value": recipe.results["imported"][0]["Groups"]
-                                                  }
-                                                  ]
+                                                      },
+                                                      {
+                                                       "type": "Container",
+                                                       "items": [
+                                                                {
+                                                                   "type": "FactSet",
+                                                                   "facts": [
+                                                                            {
+                                                                               "title": "Package Name:",
+                                                                               "value": recipe.results["imported"][0]["Package"]
+                                                                            },
+                                                                            {
+                                                                               "title": "Version:",
+                                                                               "value": str(recipe.updated_version)
+                                                                            },
+                                                                            {
+                                                                               "title": "Policy Name:",
+                                                                               "value": recipe.results["imported"][0]["Policy"]
+                                                                            },
+                                                                            {
+                                                                               "title": "Groups:",
+                                                                               "value": recipe.results["imported"][0]["Groups"]
+                                                                            }
+                                                                            ]
+                                                                }
+                                                                ]
+                                                      }
+                                                      ]
                                       }
-                                      ]
                             }
-                            ]
-            }
-
+                             ]
+			}
         ),
         headers={"Content-Type": "application/json"},
     )
