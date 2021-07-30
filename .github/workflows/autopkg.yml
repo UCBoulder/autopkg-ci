@@ -44,13 +44,7 @@ jobs:
         /usr/libexec/PlistBuddy -c "Add :JSS_REPOS array" ~/Library/Preferences/com.github.autopkg.plist
         /usr/libexec/PlistBuddy -c "Add :JSS_REPOS:0 dict" ~/Library/Preferences/com.github.autopkg.plist
         /usr/libexec/PlistBuddy -c "Add :JSS_REPOS:0:type string CDP" ~/Library/Preferences/com.github.autopkg.plist
-        
-    - name: Test AutoPkg
-      run: |
-        cat ~/Library/Preferences/com.github.autopkg.plist
-        defaults read com.github.autopkg.plist
-        defaults read com.github.autopkg.plist JSS_REPOS
-        
+      
     - name: Configure Git
       run: |
         git config --global user.name "runner"
@@ -94,7 +88,7 @@ jobs:
     - name: Checkout your autopkg override repo
       uses: actions/checkout@28c7f3d2b5162b5ddd3dfd9a45aa55eaf396478b
       with:
-        repository: UCBoulder/autopkgRecipeOverrides
+        repository: ${{ secrets.AUTOPKG_OVERRIDES_REPO }}
         token: ${{ secrets.AUTOPKG_GITHUB_TOKEN }}
         fetch-depth: 1
         ref: refs/heads/main
@@ -131,7 +125,7 @@ jobs:
               --arg body "$BODY" \
               --arg head "$BRANCH_NAME" \
            '{title: $title, body: $body, head: $head, "base": "${{ github.ref }}"}' | curl -s --request POST \
-           --url https://api.github.com/repos/${{ github.repository }}/pulls \
+           --url https://api.github.com/repos/${{ secrets.AUTOPKG_OVERRIDES_REPO }}/pulls \
            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
            --header 'content-type: application/json' \
            -d@-
