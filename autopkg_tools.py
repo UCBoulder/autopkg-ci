@@ -272,7 +272,7 @@ def teams_alert(recipe, opts):
         return
 
     if not recipe.verified:
-        task_title = "{ recipe.name } failed trust verification"
+        task_title = f"{ recipe.name } failed trust verification"
         task_description = recipe.results["message"]
         payload={
                "type":"message",
@@ -312,7 +312,7 @@ def teams_alert(recipe, opts):
                              ]
 			}
     elif recipe.error:
-        task_title = "Failed to import { recipe.name }"
+        task_title = f"Failed to import { recipe.name }"
         if not recipe.results["failed"]:
             task_description = "Unknown error"
             payload={

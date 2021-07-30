@@ -14,7 +14,7 @@ on:
 jobs:
   AutoPkg:
     runs-on: macos-latest
-    timeout-minutes: 20 # Keeps your builds from running too long
+    timeout-minutes: 120 # Keeps your builds from running too long
     steps:
     - name: Checkout AutoPkg Continuous Integration
       uses: actions/checkout@28c7f3d2b5162b5ddd3dfd9a45aa55eaf396478b # Pin SHA1 hash instead of version
