@@ -262,7 +262,7 @@ def import_icons():
 
 
 def teams_alert(recipe, opts):
-    teams_data=""
+    payload=""
     if opts.debug:
         print("Debug: skipping Teams notification - debug is enabled!")
         return
@@ -272,17 +272,128 @@ def teams_alert(recipe, opts):
         return
 
     if not recipe.verified:
-        task_title = f"{ recipe.name } failed trust verification"
+        task_title = "{ recipe.name } failed trust verification"
         task_description = recipe.results["message"]
+        payload={
+               "type":"message",
+               "attachments":[
+                            {
+                               "contentType":"application/vnd.microsoft.card.adaptive",
+                               "contentUrl":"null",
+                               "content":{        
+                                            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                                            "type": "AdaptiveCard",
+                                            "version": "1.2",
+                                            "body": [
+                                                    {
+                                                       "type": "Container",
+                                                       "items":  [
+                                                                 {
+                                                                    "type": "TextBlock",
+                                                                    "text": task_title,
+                                                                    "weight": "bolder",
+                                                                    "size": "medium"
+                                                                 }
+                                                                 ]
+                                                      },
+                                                      {
+                                                       "type": "Container",
+                                                       "items": [
+                                                                {
+                                                                    "type": "TextBlock",
+                                                                    "text": task_description,
+                                                                    "wrap": True
+                                                                }
+                                                                ]
+                                                      }
+                                                      ]
+                                      }
+                            }
+                             ]
+			}
     elif recipe.error:
-        task_title = f"Failed to import { recipe.name }"
+        task_title = "Failed to import { recipe.name }"
         if not recipe.results["failed"]:
             task_description = "Unknown error"
+            payload={
+               "type":"message",
+               "attachments":[
+                            {
+                               "contentType":"application/vnd.microsoft.card.adaptive",
+                               "contentUrl":"null",
+                               "content":{        
+                                            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                                            "type": "AdaptiveCard",
+                                            "version": "1.2",
+                                            "body": [
+                                                    {
+                                                       "type": "Container",
+                                                       "items":  [
+                                                                 {
+                                                                    "type": "TextBlock",
+                                                                    "text": task_title,
+                                                                    "weight": "bolder",
+                                                                    "size": "medium"
+                                                                 }
+                                                                 ]
+                                                      },
+                                                      {
+                                                       "type": "Container",
+                                                       "items": [
+                                                                {
+                                                                    "type": "TextBlock",
+                                                                    "text": task_description,
+                                                                    "wrap": True
+                                                                }
+                                                                ]
+                                                      }
+                                                      ]
+                                      }
+                            }
+                             ]
+			}
         else:
             task_description = ("Error: {} \n" "Traceback: {} \n").format(
                 recipe.results["failed"][0]["message"],
                 recipe.results["failed"][0]["traceback"],
             )
+            payload={
+               "type":"message",
+               "attachments":[
+                            {
+                               "contentType":"application/vnd.microsoft.card.adaptive",
+                               "contentUrl":"null",
+                               "content":{        
+                                            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                                            "type": "AdaptiveCard",
+                                            "version": "1.2",
+                                            "body": [
+                                                    {
+                                                       "type": "Container",
+                                                       "items":  [
+                                                                 {
+                                                                    "type": "TextBlock",
+                                                                    "text": task_title,
+                                                                    "weight": "bolder",
+                                                                    "size": "medium"
+                                                                 }
+                                                                 ]
+                                                      },
+                                                      {
+                                                       "type": "Container",
+                                                       "items": [
+                                                                {
+                                                                    "type": "TextBlock",
+                                                                    "text": task_description,
+                                                                    "wrap": True
+                                                                }
+                                                                ]
+                                                      }
+                                                      ]
+                                      }
+                            }
+                             ]
+			}
 
             if "No releases found for repo" in task_description:
                 # Just no updates
@@ -293,14 +404,7 @@ def teams_alert(recipe, opts):
             "*Package Version:* %s \n" % str(recipe.updated_version)
             + "*Policy Name:* `%s` \n" % recipe.results["imported"][0]["Policy"]
         )
-    else:
-        # Also no updates
-        return
-
-    response = requests.post(
-        TEAMS_WEBHOOK,
-        data=json.dumps(
-            {
+        payload={
                "type":"message",
                "attachments":[
                             {
@@ -354,6 +458,14 @@ def teams_alert(recipe, opts):
                             }
                              ]
 			}
+    else:
+        # Also no updates
+        return
+
+    response = requests.post(
+        TEAMS_WEBHOOK,
+        data=json.dumps(
+			payload
         ),
         headers={"Content-Type": "application/json"},
     )
