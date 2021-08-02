@@ -123,6 +123,6 @@ jobs:
               --arg head "$BRANCH_NAME" \
            '{title: $title, body: $body, head: $head, "base": "${{ secrets.AUTOPKG_OVERRIDES_REPO }}"}' | curl -s --request POST \
            --url https://api.github.com/repos/${{ secrets.AUTOPKG_OVERRIDES_REPO }}/pulls \
-           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+           --header 'authorization: Bearer ${{ secrets.AUTOPKG_GITHUB_TOKEN }}' \
            --header 'content-type: application/json' \
            -d@-
