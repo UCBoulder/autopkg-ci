@@ -63,14 +63,14 @@ jobs:
     - name: Setup Signing Key
       run: |
         echo "${{ secrets.SIGNING_CERT_P112 }}" | base64 --decode --output cert.p12
-        KEYCHAIN_PATH=temp.keychain
+        KEYCHAIN_NAME=temp.keychain
         KEYCHAIN_PASS=$(echo "$(date)""$RANDOM" | base64)
-        security create-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
-        security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
-        security unlock-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
-        security import cert.p12 -P ${{ secrets.SIGNING_CERT_PASS }} -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
-        security list-keychain -d user -s "$KEYCHAIN_PATH"
-        security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASS" "$KEYCHAIN_PATH"
+        security create-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_NAME"
+        security set-keychain-settings -lut 21600 "$KEYCHAIN_NAME"
+        security unlock-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_NAME"
+        security import cert.p12 -P ${{ secrets.SIGNING_CERT_PASS }} -A -t cert -f pkcs12 -k "$KEYCHAIN_NAME"
+        security list-keychain -d user -s "$KEYCHAIN_NAME"
+        security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASS" "$KEYCHAIN_NAME"
 
     - name: Add AutoPkg repos
       run: |
