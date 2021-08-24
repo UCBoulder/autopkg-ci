@@ -72,6 +72,12 @@ Here is the Microsoft documentation used for the Teams integration.
 | TEAMS_WEBHOOK_URL       | https://****.webhook.office.com                              |
 
 
+## Running the 'Autopkg' Action
+
+The 'Autopkg' action runs daily. It can also be run manually against the recipe_list.json 
+file or provided with a single recipe file name.
+
+
 ## Configuring autopkg locally
 
 
