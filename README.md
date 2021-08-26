@@ -5,7 +5,7 @@ uploaded to Jamf Pro and notifications sent to Microsoft Teams.
 
 ## Configuring Github actions
 
-Configuring this github actions relie on numerous secrets. While many of these values don't 
+Configuring this github actions rely on numerous secrets. While many of these values don't 
 need to be secret, it was the quickest way to make this project portable without editing 
 source code. 
 
