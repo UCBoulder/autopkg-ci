@@ -45,10 +45,10 @@ repositories.
 
 ### macOS signing information
 
-You'll need to provide a Developer ID Installer in p12 format and the associated password.
+You'll need to provide a Developer ID Installer certificate & private key in p12 format and the associated password for the p12 file.
 You can create the base64 text with this command:
 
-`base64 cert.12 > cert.txt`
+`base64 cert.p12 > cert.txt`
 
 #### Secrets
 | Name                    | Value                    |
