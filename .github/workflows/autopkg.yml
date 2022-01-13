@@ -99,7 +99,8 @@ jobs:
         export PATH="/usr/local/opt/curl/bin/:${PATH}"
         pip3 install requests python-jamf
         conf-python-jamf -H "${{ secrets.JSS_URL }}" -u "${{ secrets.JSS_API_USERNAME }}" --passwd "${{ secrets.JSS_API_PASSWORD }}"
-        conf-python-jamf -t > /dev/null ; echo $?
+        conf-python-jamf -t 
+        echo $?
         python3 autopkg_tools.py -l recipe_list.json
         if [ -f pull_request_title ]; then
         echo "TITLE=$(cat pull_request_title)" >> $GITHUB_ENV
