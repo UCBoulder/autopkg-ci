@@ -93,14 +93,24 @@ jobs:
         fetch-depth: 1
         ref: refs/heads/main
         path: overrides
+        
+    -name: Configure python JAMF_PRO_URL
+      run: |
+        export PATH="/usr/local/opt/curl/bin/:${PATH}"
+        brew install coreutils
+        pip3 install python-jamf
+        defaults write edu.utah.mlib.jamfutil JSSHostname "${{ secrets.JSS_URL }}"
+        defaults write edu.utah.mlib.jamfutil Username "${{ secrets.JSS_API_USERNAME }}"
+        python3_bin=$(realpath `which python3`)
+        python3_app=$(echo ${python3_bin} | sed -e 's/bin\/python3.9/Resources\/Python.app/g')
+        security add-internet-password -a "${{ secrets.JSS_API_USERNAME }}" -s "${{ secrets.JSS_URL }}" -w "${{ secrets.JSS_API_PASSWORD }}" -T "${python3_app}" "$KEYCHAIN_NAME"
+        conf-python-jamf -t > /dev/null; echo $?
+
 
     - name: Run AutoPkg
       run: |
         export PATH="/usr/local/opt/curl/bin/:${PATH}"
-        pip3 install requests python-jamf
-        conf-python-jamf -H "${{ secrets.JSS_URL }}" -u "${{ secrets.JSS_API_USERNAME }}" --passwd "${{ secrets.JSS_API_PASSWORD }}"
-        conf-python-jamf -t 
-        echo $?
+        pip3 install requests
         python3 autopkg_tools.py -l recipe_list.json
         if [ -f pull_request_title ]; then
         echo "TITLE=$(cat pull_request_title)" >> $GITHUB_ENV
