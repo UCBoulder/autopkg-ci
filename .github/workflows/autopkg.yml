@@ -110,7 +110,7 @@ jobs:
       env:
         RECIPE: ${{ github.event.inputs.recipe }}
         TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
-        JAMF_PRO_URL: ${{ secrets.JSS_URL }
+        JAMF_PRO_URL: ${{ secrets.JSS_URL }}
 
     - name: Create Trust Info pull request
       if: env.TITLE
