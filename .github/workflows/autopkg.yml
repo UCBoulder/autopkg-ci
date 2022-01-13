@@ -64,7 +64,6 @@ jobs:
       run: |
         export PATH="/usr/local/opt/curl/bin/:${PATH}"
         brew install coreutils
-        pip3 install python-jamf
         echo "${{ secrets.SIGNING_CERT_P112 }}" | base64 --decode --output cert.p12
         KEYCHAIN_NAME=temp.keychain
         KEYCHAIN_PASS=$(echo "$(date)""$RANDOM" | base64)
@@ -107,7 +106,7 @@ jobs:
     - name: Run AutoPkg
       run: |
         export PATH="/usr/local/opt/curl/bin/:${PATH}"
-        pip3 install requests
+        pip3 install requests python-jamf
         python3 autopkg_tools.py -l recipe_list.json
         if [ -f pull_request_title ]; then
         echo "TITLE=$(cat pull_request_title)" >> $GITHUB_ENV
