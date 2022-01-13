@@ -97,7 +97,9 @@ jobs:
     - name: Run AutoPkg
       run: |
         export PATH="/usr/local/opt/curl/bin/:${PATH}"
-        pip3 install requests
+        pip3 install requests python-jamf
+        conf-python-jamf -H "${{ secrets.JSS_URL }}" -u "${{ secrets.JSS_API_USERNAME }}" --passwd "${{ secrets.JSS_API_PASSWORD }}"
+        conf-python-jamf -t > /dev/null ; echo $?
         python3 autopkg_tools.py -l recipe_list.json
         if [ -f pull_request_title ]; then
         echo "TITLE=$(cat pull_request_title)" >> $GITHUB_ENV
@@ -108,6 +110,7 @@ jobs:
       env:
         RECIPE: ${{ github.event.inputs.recipe }}
         TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+        JAMF_PRO_URL: ${{ secrets.JSS_URL }
 
     - name: Create Trust Info pull request
       if: env.TITLE

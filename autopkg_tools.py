@@ -21,9 +21,11 @@ import json
 import plistlib
 import requests
 import subprocess
+import python-jamf
 from pathlib import Path
 from optparse import OptionParser
 from datetime import datetime
+
 
 
 DEBUG = False
@@ -31,6 +33,8 @@ TEAMS_WEBHOOK = os.environ.get("TEAMS_WEBHOOK_URL", None)
 MUNKI_REPO = os.path.join(os.getenv("GITHUB_WORKSPACE", "/tmp/"), "munki_repo")
 OVERRIDES_DIR = os.path.relpath("overrides/")
 RECIPE_TO_RUN = os.environ.get("RECIPE", None)
+JAMF_PRO_URL = os.environ.get("JAMF_PRO_URL", None)
+
 
 class Recipe(object):
     def __init__(self, path):
@@ -404,6 +408,23 @@ def teams_alert(recipe, opts):
             "*Package Version:* %s \n" % str(recipe.updated_version)
             + "*Policy Name:* `%s` \n" % recipe.results["imported"][0]["Policy"]
         )
+        
+        #Construct jamf pro URLs
+        api = jamf.API()
+        package_name=recipe.results["imported"][0]["Package"]
+        package_api_search="packages/name/%s" % package_name
+        package=api.get(package_api_search)
+        package_id=package["package"]["id"]
+        package_url = "{base}/packages.html?id={id}".format(id=package_id, base=JAMF_PRO_URL)
+        package_txt = "[{label}]({url})".format(label=package_name, url=package_url)
+        
+        policy_name=recipe.results["imported"][0]["Policy"]
+        policy_api_search="policies/name/%s" % policy_name
+        policy=api.get(policy_api_search)
+        policy_id=policy["policy"]["general"]["id"]
+        policy_url = "{base}/policies.html?id={id}".format(id=policy_id, base=JAMF_PRO_URL)    
+        policy_txt = "[{label}]({url})".format(label=policy_name, url=policy_url)
+
         payload={
                "type":"message",
                "attachments":[
@@ -434,7 +455,7 @@ def teams_alert(recipe, opts):
                                                                    "facts": [
                                                                             {
                                                                                "title": "Package Name:",
-                                                                               "value": recipe.results["imported"][0]["Package"],
+                                                                               "value": package_txt,
                                                                                "wrap": False
                                                                             },
                                                                             {
@@ -443,7 +464,7 @@ def teams_alert(recipe, opts):
                                                                             },
                                                                             {
                                                                                "title": "Policy Name:",
-                                                                               "value": recipe.results["imported"][0]["Policy"]
+                                                                               "value": policy_txt
                                                                             },
                                                                             {
                                                                                "title": "Groups:",
