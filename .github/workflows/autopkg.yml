@@ -60,8 +60,11 @@ jobs:
         chmod 600 ~/.ssh/privKey
         ssh-add -k ~/.ssh/privKey
 
-    - name: Setup Signing Key
+    - name: Setup Signing Key & API keychain entries
       run: |
+        export PATH="/usr/local/opt/curl/bin/:${PATH}"
+        brew install coreutils
+        pip3 install python-jamf
         echo "${{ secrets.SIGNING_CERT_P112 }}" | base64 --decode --output cert.p12
         KEYCHAIN_NAME=temp.keychain
         KEYCHAIN_PASS=$(echo "$(date)""$RANDOM" | base64)
@@ -71,6 +74,13 @@ jobs:
         security import cert.p12 -P ${{ secrets.SIGNING_CERT_PASS }} -A -t cert -f pkcs12 -k "$KEYCHAIN_NAME"
         security list-keychain -d user -s "$KEYCHAIN_NAME"
         security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASS" "$KEYCHAIN_NAME"
+        defaults write edu.utah.mlib.jamfutil JSSHostname "${{ secrets.JSS_URL }}"
+        defaults write edu.utah.mlib.jamfutil Username "${{ secrets.JSS_API_USERNAME }}"
+        python3_bin=$(realpath `which python3`)
+        python3_app=$(echo ${python3_bin} | sed -e 's/bin\/python3.9/Resources\/Python.app/g')
+        security add-internet-password -a "${{ secrets.JSS_API_USERNAME }}" -s "${{ secrets.JSS_URL }}" -w "${{ secrets.JSS_API_PASSWORD }}" -T "${python3_app}" "$KEYCHAIN_NAME"
+        conf-python-jamf -t > /dev/null; echo $?
+
 
     - name: Add AutoPkg repos
       run: |
@@ -94,19 +104,6 @@ jobs:
         ref: refs/heads/main
         path: overrides
         
-    - name: Configure python-jamf
-      run: |
-        export PATH="/usr/local/opt/curl/bin/:${PATH}"
-        brew install coreutils
-        pip3 install python-jamf
-        defaults write edu.utah.mlib.jamfutil JSSHostname "${{ secrets.JSS_URL }}"
-        defaults write edu.utah.mlib.jamfutil Username "${{ secrets.JSS_API_USERNAME }}"
-        python3_bin=$(realpath `which python3`)
-        python3_app=$(echo ${python3_bin} | sed -e 's/bin\/python3.9/Resources\/Python.app/g')
-        security add-internet-password -a "${{ secrets.JSS_API_USERNAME }}" -s "${{ secrets.JSS_URL }}" -w "${{ secrets.JSS_API_PASSWORD }}" -T "${python3_app}" "$KEYCHAIN_NAME"
-        conf-python-jamf -t > /dev/null; echo $?
-
-
 
     - name: Run AutoPkg
       run: |
