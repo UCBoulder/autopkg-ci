@@ -30,6 +30,15 @@ jobs:
       run: |
         curl -L https://github.com/jssimporter/JSSImporter/releases/download/v1.1.5/jssimporter-1.1.5.pkg --output /tmp/jssimporter.pkg
         sudo installer -pkg /tmp/jssimporter.pkg -target /
+
+    - name: coreutils install  
+      run: |   
+        brew install coreutils
+
+    - name: python-jamf install  
+      run: |  
+        pip3 install requests python-jamf
+
                         
     - name:  AutoPkg Configuration
       run: |
@@ -52,6 +61,12 @@ jobs:
         git config --global credential.helper store
         echo "https://${{ secrets.AUTOPKG_GITHUB_USER }}:${{ secrets.AUTOPKG_GITHUB_TOKEN }}@github.com" > ~/.git-credentials
 
+    - name: Configure python-jamf
+      run: |
+        defaults write edu.utah.mlib.jamfutil JSSHostname "${{ secrets.JSS_URL }}"
+        defaults write edu.utah.mlib.jamfutil Username "${{ secrets.JSS_API_USERNAME }}"
+
+
     - name: Setup SSH
       run: |
         eval $(ssh-agent)
@@ -63,7 +78,6 @@ jobs:
     - name: Setup Signing Key & API keychain entries
       run: |
         export PATH="/usr/local/opt/curl/bin/:${PATH}"
-        brew install coreutils
         echo "${{ secrets.SIGNING_CERT_P112 }}" | base64 --decode --output cert.p12
         KEYCHAIN_NAME=temp.keychain
         KEYCHAIN_PASS=$(echo "$(date)""$RANDOM" | base64)
@@ -73,12 +87,11 @@ jobs:
         security import cert.p12 -P ${{ secrets.SIGNING_CERT_PASS }} -A -t cert -f pkcs12 -k "$KEYCHAIN_NAME"
         security list-keychain -d user -s "$KEYCHAIN_NAME"
         security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASS" "$KEYCHAIN_NAME"
-        defaults write edu.utah.mlib.jamfutil JSSHostname "${{ secrets.JSS_URL }}"
-        defaults write edu.utah.mlib.jamfutil Username "${{ secrets.JSS_API_USERNAME }}"
+        echo "Caching API credentials"
         python3_bin=$(realpath `which python3`)
         python3_app=$(echo ${python3_bin} | sed -e 's/bin\/python3.9/Resources\/Python.app/g')
         security add-internet-password -a "${{ secrets.JSS_API_USERNAME }}" -s "${{ secrets.JSS_URL }}" -w "${{ secrets.JSS_API_PASSWORD }}" -T "${python3_app}" "$KEYCHAIN_NAME"
-        security set-generic-password-partition-list -S apple-tool:,apple:,unsigned: -a "${{ secrets.JSS_API_USERNAME }}" -k "$KEYCHAIN_PASS" "$KEYCHAIN_NAME"
+        security set-generic-password-partition-list -S apple-tool:,apple:,unsigned: -a ${{ secrets.JSS_API_USERNAME }} -k "$KEYCHAIN_PASS" "$KEYCHAIN_NAME"
 
 
     - name: Add AutoPkg repos
@@ -107,7 +120,6 @@ jobs:
     - name: Run AutoPkg
       run: |
         export PATH="/usr/local/opt/curl/bin/:${PATH}"
-        pip3 install requests python-jamf
         python3 autopkg_tools.py -l recipe_list.json
         if [ -f pull_request_title ]; then
         echo "TITLE=$(cat pull_request_title)" >> $GITHUB_ENV
