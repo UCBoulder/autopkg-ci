@@ -21,7 +21,7 @@ import json
 import plistlib
 import requests
 import subprocess
-import python-jamf
+import jamf
 from pathlib import Path
 from optparse import OptionParser
 from datetime import datetime
