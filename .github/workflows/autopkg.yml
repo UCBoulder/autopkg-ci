@@ -28,7 +28,7 @@ jobs:
         
     - name: JSS importer install  
       run: |
-        curl -L https://github.com/jssimporter/JSSImporter/releases/download/v1.1.5/jssimporter-1.1.5.pkg --output /tmp/jssimporter.pkg
+        curl -L https://github.com/jssimporter/JSSImporter/releases/download/v1.1.6/jssimporter-1.1.6.pkg --output /tmp/jssimporter.pkg
         sudo installer -pkg /tmp/jssimporter.pkg -target /
 
     - name: coreutils install  
