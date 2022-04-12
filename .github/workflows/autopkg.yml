@@ -60,7 +60,10 @@ jobs:
         git config --global user.email "runner@githubactions.local"
         git config --global credential.helper store
         echo "https://${{ secrets.AUTOPKG_GITHUB_USER }}:${{ secrets.AUTOPKG_GITHUB_TOKEN }}@github.com" > ~/.git-credentials
-
+    - name: Configure python-jamf
+      run: |
+        conf-python-jamf --hostname "${{ secrets.JSS_URL }}" --user "${{ secrets.JSS_API_USERNAME }}" --passwd "${{ secrets.JSS_API_PASSWORD }}"
+        
     - name: Setup SSH
       run: |
         eval $(ssh-agent)
