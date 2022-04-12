@@ -61,12 +61,6 @@ jobs:
         git config --global credential.helper store
         echo "https://${{ secrets.AUTOPKG_GITHUB_USER }}:${{ secrets.AUTOPKG_GITHUB_TOKEN }}@github.com" > ~/.git-credentials
 
-    - name: Configure python-jamf
-      run: |
-        defaults write edu.utah.mlib.jamfutil JSSHostname "${{ secrets.JSS_URL }}"
-        defaults write edu.utah.mlib.jamfutil Username "${{ secrets.JSS_API_USERNAME }}"
-
-
     - name: Setup SSH
       run: |
         eval $(ssh-agent)
