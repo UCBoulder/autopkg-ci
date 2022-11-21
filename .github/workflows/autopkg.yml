@@ -25,22 +25,21 @@ jobs:
       run: |
         curl -L https://github.com/autopkg/autopkg/releases/download/v2.4.1/autopkg-2.4.1.pkg --output /tmp/autopkg.pkg
         sudo installer -pkg /tmp/autopkg.pkg -target /
-        
-    - name: JSS importer install  
+
+    - name: JSS importer install
       run: |
         curl -L https://github.com/jssimporter/JSSImporter/releases/download/v1.1.6/jssimporter-1.1.6.pkg --output /tmp/jssimporter.pkg
         sudo installer -pkg /tmp/jssimporter.pkg -target /
 
-    - name: coreutils install  
-      run: |   
+    - name: coreutils install
+      run: |
         brew install coreutils
 
-    - name: python-jamf install  
-      run: |  
-        pip3 install -r requirements.txt
-        ls -lah ~
 
-                        
+    - name: python-jamf install
+      run: |
+        pip3 install -r requirements.txt
+
     - name:  AutoPkg Configuration
       run: |
         defaults write com.github.autopkg RECIPE_OVERRIDE_DIRS "$(pwd)"/overrides/
@@ -54,17 +53,18 @@ jobs:
         /usr/libexec/PlistBuddy -c "Add :JSS_REPOS array" ~/Library/Preferences/com.github.autopkg.plist
         /usr/libexec/PlistBuddy -c "Add :JSS_REPOS:0 dict" ~/Library/Preferences/com.github.autopkg.plist
         /usr/libexec/PlistBuddy -c "Add :JSS_REPOS:0:type string CDP" ~/Library/Preferences/com.github.autopkg.plist
-      
+
     - name: Configure Git
       run: |
         git config --global user.name "runner"
         git config --global user.email "runner@githubactions.local"
         git config --global credential.helper store
         echo "https://${{ secrets.AUTOPKG_GITHUB_USER }}:${{ secrets.AUTOPKG_GITHUB_TOKEN }}@github.com" > ~/.git-credentials
+
     - name: Configure python-jamf
       run: |
-        conf-python-jamf --hostname "${{ secrets.JSS_URL }}" --user "${{ secrets.JSS_API_USERNAME }}" --passwd "${{ secrets.JSS_API_PASSWORD }}"
-        
+        /Library/Frameworks/Python.framework/Versions/current/bin/conf-python-jamf --hostname "${{ secrets.JSS_URL }}" --user "${{ secrets.JSS_API_USERNAME }}" --passwd "${{ secrets.JSS_API_PASSWORD }}"
+
     - name: Setup SSH
       run: |
         eval $(ssh-agent)
@@ -95,7 +95,7 @@ jobs:
 
     - name: Add AutoPkg repos
       run: |
-        for repo in $(cat repo_list.txt); do autopkg repo-add "$repo" && autopkg repo-update "$repo"; done    
+        for repo in $(cat repo_list.txt); do autopkg repo-add "$repo" && autopkg repo-update "$repo"; done
 
     - name: Checkout autopkg cache repo
       uses: actions/checkout@28c7f3d2b5162b5ddd3dfd9a45aa55eaf396478b
@@ -105,7 +105,7 @@ jobs:
         fetch-depth: 1
         ref: refs/heads/main
         path: cache
-        
+
     - name: Checkout your autopkg override repo
       uses: actions/checkout@28c7f3d2b5162b5ddd3dfd9a45aa55eaf396478b
       with:
@@ -114,7 +114,7 @@ jobs:
         fetch-depth: 1
         ref: refs/heads/main
         path: overrides
-        
+
 
     - name: Run AutoPkg
       run: |
