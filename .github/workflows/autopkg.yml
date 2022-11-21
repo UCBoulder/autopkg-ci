@@ -34,18 +34,11 @@ jobs:
     - name: coreutils install
       run: |
         brew install coreutils
-        which -a python3
-        which -a python
-        which -a pip
-        which -a pip3
-        echo $PATH
 
 
     - name: python-jamf install
       run: |
         pip3 install -r requirements.txt
-        python3 --version | tr -d "Python "
-        ls -alh /Library/Frameworks/Python.framework/Versions/
 
     - name:  AutoPkg Configuration
       run: |
@@ -67,9 +60,10 @@ jobs:
         git config --global user.email "runner@githubactions.local"
         git config --global credential.helper store
         echo "https://${{ secrets.AUTOPKG_GITHUB_USER }}:${{ secrets.AUTOPKG_GITHUB_TOKEN }}@github.com" > ~/.git-credentials
+
     - name: Configure python-jamf
       run: |
-        conf-python-jamf --hostname "${{ secrets.JSS_URL }}" --user "${{ secrets.JSS_API_USERNAME }}" --passwd "${{ secrets.JSS_API_PASSWORD }}"
+        /Library/Frameworks/Python.framework/Versions/current/bin/conf-python-jamf --hostname "${{ secrets.JSS_URL }}" --user "${{ secrets.JSS_API_USERNAME }}" --passwd "${{ secrets.JSS_API_PASSWORD }}"
 
     - name: Setup SSH
       run: |
