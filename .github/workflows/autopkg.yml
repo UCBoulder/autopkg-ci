@@ -45,7 +45,6 @@ jobs:
       run: |
         pip3 install -r requirements.txt
         pip3 show python-jamf
-        pip3 inspect
         which conf-python-jamf
         head /usr/local/bin/conf-python-jamf
 
