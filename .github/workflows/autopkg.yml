@@ -38,8 +38,8 @@ jobs:
     - name: python-jamf install
       run: |
         pip3 install -r requirements.txt
-        ls -lah ~
-        head `which conf-python-jamf`
+        which conf-python-jamf
+        head /usr/local/bin/conf-python-jamf
 
 
     - name:  AutoPkg Configuration
