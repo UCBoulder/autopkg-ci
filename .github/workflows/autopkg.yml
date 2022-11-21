@@ -34,10 +34,18 @@ jobs:
     - name: coreutils install
       run: |
         brew install coreutils
+        which -a python3
+        which -a python
+        which -a pip
+        which -a pip3
+        echo $PATH
+
 
     - name: python-jamf install
       run: |
         pip3 install -r requirements.txt
+        pip3 show python-jamf
+        pip3 inspect
         which conf-python-jamf
         head /usr/local/bin/conf-python-jamf
 
