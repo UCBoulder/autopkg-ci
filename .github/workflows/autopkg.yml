@@ -44,8 +44,9 @@ jobs:
     - name: python-jamf install
       run: |
         pip3 install -r requirements.txt
-        find /usr/local /usr/opt -iname conf-python-jamf
+        find / -iname conf-python-jamf 2>/dev/null || return 0
         echo "Monkey"
+        ls -lah /Volumes
 
 
     - name:  AutoPkg Configuration
