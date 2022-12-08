@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 120 # Keeps your builds from running too long
     steps:
     - name: Checkout AutoPkg Continuous Integration
-      uses: actions/checkout@v2.5.0 # Pin SHA1 hash instead of version
+      uses: actions/checkout@v3 # Pin SHA1 hash instead of version
       with:
         fetch-depth: 1
 
@@ -98,7 +98,7 @@ jobs:
         for repo in $(cat repo_list.txt); do autopkg repo-add "$repo" && autopkg repo-update "$repo"; done
 
     - name: Checkout autopkg cache repo
-      uses: actions/checkout@v2.5.0
+      uses: actions/checkout@v3
       with:
         repository: ${{ secrets.AUTOPKG_CACHE_REPO }}
         token: ${{ secrets.AUTOPKG_GITHUB_TOKEN }}
@@ -107,7 +107,7 @@ jobs:
         path: cache
 
     - name: Checkout your autopkg override repo
-      uses: actions/checkout@v2.5.0
+      uses: actions/checkout@v3
       with:
         repository: ${{ secrets.AUTOPKG_OVERRIDES_REPO }}
         token: ${{ secrets.AUTOPKG_GITHUB_TOKEN }}
