@@ -502,6 +502,7 @@ def teams_alert(recipe, opts):
             "Request to Teams returned an error %s, the response is:\n%s"
             % (response.status_code, response.text)
         )
+    return
 
 
 def main():
