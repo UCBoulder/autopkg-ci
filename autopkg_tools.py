@@ -553,7 +553,7 @@ def main():
         handle_recipe(recipe, opts)
         log = open("/tmp/autopkg.plist", "r").read()
         print(log)
-        # teams_alert(recipe, opts)
+        teams_alert(recipe, opts)
         if not opts.disable_verification:
             if not recipe.verified:
                 failures.append(recipe)
