@@ -268,9 +268,9 @@ def import_icons():
 
 def teams_alert(recipe, opts):
     payload = ""
-    if opts.debug:
-        print("Debug: skipping Teams notification - debug is enabled!")
-        return
+    # if opts.debug:
+    #    print("Debug: skipping Teams notification - debug is enabled!")
+    #    return
 
     if TEAMS_WEBHOOK is None:
         print("Skipping Teams notification - webhook is missing!")
