@@ -271,7 +271,7 @@ def teams_alert(recipe, opts):
     # if opts.debug:
     #    print("Debug: skipping Teams notification - debug is enabled!")
     #    return
-
+    print("Teams Notifications")
     if TEAMS_WEBHOOK is None:
         print("Skipping Teams notification - webhook is missing!")
         return
