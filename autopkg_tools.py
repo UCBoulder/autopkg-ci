@@ -551,7 +551,7 @@ def main():
     recipes = parse_recipes(recipes)
     for recipe in recipes:
         handle_recipe(recipe, opts)
-        teams_alert(recipe, opts)
+        # teams_alert(recipe, opts)
         if not opts.disable_verification:
             if not recipe.verified:
                 failures.append(recipe)
