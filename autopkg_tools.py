@@ -277,6 +277,7 @@ def teams_alert(recipe, opts):
         return
 
     if not recipe.verified:
+        print("Recipe not verified!")
         task_title = f"{ recipe.name } failed trust verification"
         task_description = recipe.results["message"]
         payload = {
@@ -317,8 +318,10 @@ def teams_alert(recipe, opts):
             ],
         }
     elif recipe.error:
+        print("Recipe not failed!")
         task_title = f"Failed to import { recipe.name }"
         if not recipe.results["failed"]:
+            print("Unknown Error!")
             task_description = "Unknown error"
             payload = {
                 "type": "message",
@@ -358,6 +361,7 @@ def teams_alert(recipe, opts):
                 ],
             }
         else:
+            print("Known Error!")
             task_description = ("Error: {} \n" "Traceback: {} \n").format(
                 recipe.results["failed"][0]["message"],
                 recipe.results["failed"][0]["traceback"],
@@ -401,9 +405,10 @@ def teams_alert(recipe, opts):
             }
 
             if "No releases found for repo" in task_description:
-                # Just no updates
+                print("No release!")  # Just no updates
                 return
     elif recipe.updated:
+        print("Package uploaded!")
         task_title = (
             "Uploaded %s to Jamf Pro" % recipe.results["imported"][0]["Package"]
         )
@@ -411,7 +416,7 @@ def teams_alert(recipe, opts):
             "*Package Version:* %s \n" % str(recipe.updated_version)
             + "*Policy Name:* `%s` \n" % recipe.results["imported"][0]["Policy"]
         )
-
+        print("1...")
         # Construct jamf pro URLs
         api = jamf.API()
         package_name = recipe.results["imported"][0]["Package"]
@@ -422,7 +427,7 @@ def teams_alert(recipe, opts):
             id=package_id, base=JAMF_PRO_URL
         )
         package_txt = "[{label}]({url})".format(label=package_name, url=package_url)
-
+        print("2...")
         policy_name = recipe.results["imported"][0]["Policy"]
         policy_api_search = "policies/name/%s" % policy_name
         policy = api.get(policy_api_search)
@@ -431,7 +436,7 @@ def teams_alert(recipe, opts):
             id=policy_id, base=JAMF_PRO_URL
         )
         policy_txt = "[{label}]({url})".format(label=policy_name, url=policy_url)
-
+        print("3...")
         payload = {
             "type": "message",
             "attachments": [
