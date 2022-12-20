@@ -496,18 +496,7 @@ def teams_alert(recipe, opts):
     else:
         # Also no updates
         return
-
-    response = requests.post(
-        TEAMS_WEBHOOK,
-        data=json.dumps(payload),
-        headers={"Content-Type": "application/json"},
-    )
-    if response.status_code != 200:
-        raise ValueError(
-            "Request to Teams returned an error %s, the response is:\n%s"
-            % (response.status_code, response.text)
-        )
-    return
+    print(payload)
 
 
 def main():
