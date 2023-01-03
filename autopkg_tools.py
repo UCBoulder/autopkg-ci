@@ -485,12 +485,12 @@ def teams_alert(recipe, opts):
                                                 ],
                                             },
                                         ],
-                                    }
+                                    },
                                 ],
                             },
                         ],
                     },
-                }
+                },
             ],
         }
     else:
