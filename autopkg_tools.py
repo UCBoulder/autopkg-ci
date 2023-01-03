@@ -496,6 +496,7 @@ def teams_alert(recipe, opts):
     else:
         # Also no updates
         return
+        print(json.dumps(payload))
     return
 
 
