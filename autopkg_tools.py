@@ -455,9 +455,9 @@ def teams_alert(recipe, opts):
                                         "type": "TextBlock",
                                         "text": "A new package has been uploaded to Jamf Pro",
                                         "weight": "bolder",
-                                        "size": "medium",
+                                        "size": "medium"
                                     }
-                                ],
+                                ]
                             },
                             {
                                 "type": "Container",
@@ -468,35 +468,43 @@ def teams_alert(recipe, opts):
                                             {
                                                 "title": "Package Name:",
                                                 "value": package_txt,
-                                                "wrap": False,
+                                                "wrap": False
                                             },
                                             {
                                                 "title": "Version:",
-                                                "value": str(recipe.updated_version),
+                                                "value": str(recipe.updated_version)
                                             },
                                             {
                                                 "title": "Policy Name:",
-                                                "value": policy_txt,
+                                                "value": policy_txt
                                             },
                                             {
                                                 "title": "Groups:",
-                                                "value": recipe.results["imported"][0][
-                                                    "Groups"
-                                                ],
-                                            },
-                                        ],
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                },
-            ],
+                                                "value": recipe.results["imported"][0]["Groups"]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
         }
     else:
         # Also no updates
         return
-        print(json.dumps(payload))
+
+    response = requests.post(
+        TEAMS_WEBHOOK,
+        data=json.dumps(payload),
+        headers={"Content-Type": "application/json"},
+    )
+    if response.status_code != 200:
+        raise ValueError(
+            "Request to Teams returned an error %s, the response is:\n%s"
+            % (response.status_code, response.text)
+        )
     return
 
 
