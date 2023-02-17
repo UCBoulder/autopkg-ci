@@ -420,10 +420,12 @@ def teams_alert(recipe, opts):
         # Construct jamf pro URLs
         api = jamf.API()
         package_name = recipe.results["imported"][0]["Package"]
-        package_api_search = "{base}/packages/name/%s" % package_name
+        package_api_search = "{base}/packages/name/{name}".format(
+            name=package_name, base=JAMF_PRO_URL
+        ) 
         package = api.get(package_api_search)
         print("2...")
-        return
+        
         package_id = package["package"]["id"]
         package_url = "{base}/packages.html?id={id}".format(
             id=package_id, base=JAMF_PRO_URL
@@ -432,7 +434,9 @@ def teams_alert(recipe, opts):
             label=package_name, url=package_url)
         print("3...")
         policy_name = recipe.results["imported"][0]["Policy"]
-        policy_api_search = "policies/name/%s" % policy_name
+        policy_api_search = "{base}/policies/name/{name}".format(
+            name=policy_name, base=JAMF_PRO_URL
+        )
         policy = api.get(policy_api_search)
         policy_id = policy["policy"]["general"]["id"]
         policy_url = "{base}/policies.html?id={id}".format(
