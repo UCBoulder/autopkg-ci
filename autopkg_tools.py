@@ -434,9 +434,7 @@ def teams_alert(recipe, opts):
             label=package_name, url=package_url)
         print("3...")
         policy_name = recipe.results["imported"][0]["Policy"]
-        policy_api_search = "policies/name/{name}".format(
-            name=policy_name
-        )
+        policy_api_search = f"policies/name/{policy_name}"
         policy = api.get(policy_api_search)
         policy_id = policy["policy"]["general"]["id"]
         policy_url = "{base}/policies.html?id={id}".format(
