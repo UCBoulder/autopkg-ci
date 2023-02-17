@@ -418,18 +418,19 @@ def teams_alert(recipe, opts):
         )
         print("1...")
         # Construct jamf pro URLs
-        return
         api = jamf.API()
         package_name = recipe.results["imported"][0]["Package"]
         package_api_search = "packages/name/%s" % package_name
         package = api.get(package_api_search)
+        print("2...")
+        return
         package_id = package["package"]["id"]
         package_url = "{base}/packages.html?id={id}".format(
             id=package_id, base=JAMF_PRO_URL
         )
         package_txt = "[{label}]({url})".format(
             label=package_name, url=package_url)
-        print("2...")
+        print("3...")
         policy_name = recipe.results["imported"][0]["Policy"]
         policy_api_search = "policies/name/%s" % policy_name
         policy = api.get(policy_api_search)
@@ -439,7 +440,7 @@ def teams_alert(recipe, opts):
         )
         policy_txt = "[{label}]({url})".format(
             label=policy_name, url=policy_url)
-        print("3...")
+        print("4...")
         payload = {
             "type": "message",
             "attachments": [
