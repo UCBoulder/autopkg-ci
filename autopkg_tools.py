@@ -420,7 +420,7 @@ def teams_alert(recipe, opts):
         # Construct jamf pro URLs
         api = jamf.API()
         package_name = recipe.results["imported"][0]["Package"]
-        package_api_search = "packages/name/%s" % package_name
+        package_api_search = "{base}/packages/name/%s" % package_name
         package = api.get(package_api_search)
         print("2...")
         return
