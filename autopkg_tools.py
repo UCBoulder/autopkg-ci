@@ -437,60 +437,7 @@ def teams_alert(recipe, opts):
         )
         policy_txt = "[{label}]({url})".format(label=policy_name, url=policy_url)
         print("3...")
-        payload = {
-            "type": "message",
-            "attachments": [
-                {
-                    "contentType": "application/vnd.microsoft.card.adaptive",
-                    "contentUrl": "null",
-                    "content": {
-                        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                        "type": "AdaptiveCard",
-                        "version": "1.2",
-                        "body": [
-                            {
-                                "type": "Container",
-                                "items": [
-                                    {
-                                        "type": "TextBlock",
-                                        "text": "A new package has been uploaded to Jamf Pro",
-                                        "weight": "bolder",
-                                        "size": "medium"
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "Container",
-                                "items": [
-                                    {
-                                        "type": "FactSet",
-                                        "facts": [
-                                            {
-                                                "title": "Package Name:",
-                                                "value": package_txt,
-                                                "wrap": False
-                                            },
-                                            {
-                                                "title": "Version:",
-                                                "value": str(recipe.updated_version)
-                                            },
-                                            {
-                                                "title": "Policy Name:",
-                                                "value": policy_txt
-                                            },
-                                            {
-                                                "title": "Groups:",
-                                                "value": recipe.results["imported"][0]["Groups"]
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
+        
         print(package_txt)
         print(str(recipe.updated_version))
         print(policy_txt)
