@@ -418,6 +418,7 @@ def teams_alert(recipe, opts):
         )
         print("1...")
         # Construct jamf pro URLs
+        return
         api = jamf.API()
         package_name = recipe.results["imported"][0]["Package"]
         package_api_search = "packages/name/%s" % package_name
@@ -426,7 +427,8 @@ def teams_alert(recipe, opts):
         package_url = "{base}/packages.html?id={id}".format(
             id=package_id, base=JAMF_PRO_URL
         )
-        package_txt = "[{label}]({url})".format(label=package_name, url=package_url)
+        package_txt = "[{label}]({url})".format(
+            label=package_name, url=package_url)
         print("2...")
         policy_name = recipe.results["imported"][0]["Policy"]
         policy_api_search = "policies/name/%s" % policy_name
@@ -435,17 +437,77 @@ def teams_alert(recipe, opts):
         policy_url = "{base}/policies.html?id={id}".format(
             id=policy_id, base=JAMF_PRO_URL
         )
-        policy_txt = "[{label}]({url})".format(label=policy_name, url=policy_url)
+        policy_txt = "[{label}]({url})".format(
+            label=policy_name, url=policy_url)
         print("3...")
-        
-        print(package_txt)
-        print(str(recipe.updated_version))
-        print(policy_txt)
-        print(recipe.results["imported"][0]["Groups"])
+        payload = {
+            "type": "message",
+            "attachments": [
+                {
+                    "contentType": "application/vnd.microsoft.card.adaptive",
+                    "contentUrl": "null",
+                    "content": {
+                        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                        "type": "AdaptiveCard",
+                        "version": "1.2",
+                        "body": [
+                            {
+                                "type": "Container",
+                                "items": [
+                                    {
+                                        "type": "TextBlock",
+                                        "text": "A new package has been uploaded to Jamf Pro",
+                                        "weight": "bolder",
+                                        "size": "medium"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "Container",
+                                "items": [
+                                    {
+                                        "type": "FactSet",
+                                        "facts": [
+                                            {
+                                                "title": "Package Name:",
+                                                "value": package_txt,
+                                                "wrap": False
+                                            },
+                                            {
+                                                "title": "Version:",
+                                                "value": str(recipe.updated_version)
+                                            },
+                                            {
+                                                "title": "Policy Name:",
+                                                "value": policy_txt
+                                            },
+                                            {
+                                                "title": "Groups:",
+                                                "value": recipe.results["imported"][0]["Groups"]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
     else:
         # Also no updates
         return
 
+    response = requests.post(
+        TEAMS_WEBHOOK,
+        data=json.dumps(payload),
+        headers={"Content-Type": "application/json"},
+    )
+    if response.status_code != 200:
+        raise ValueError(
+            "Request to Teams returned an error %s, the response is:\n%s"
+            % (response.status_code, response.text)
+        )
     return
 
 
