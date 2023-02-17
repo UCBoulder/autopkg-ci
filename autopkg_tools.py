@@ -491,20 +491,14 @@ def teams_alert(recipe, opts):
                 }
             ]
         }
+        print(package_txt)
+        print(str(recipe.updated_version))
+        print(policy_txt)
+        print(recipe.results["imported"][0]["Groups"])
     else:
         # Also no updates
         return
 
-    response = requests.post(
-        TEAMS_WEBHOOK,
-        data=json.dumps(payload),
-        headers={"Content-Type": "application/json"},
-    )
-    if response.status_code != 200:
-        raise ValueError(
-            "Request to Teams returned an error %s, the response is:\n%s"
-            % (response.status_code, response.text)
-        )
     return
 
 
