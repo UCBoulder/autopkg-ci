@@ -414,18 +414,18 @@ def teams_alert(recipe, opts):
         )
         task_description = (
             "*Package Version:* %s \n" % str(recipe.updated_version)
-            + "*Policy Name:* `%s` \n" % recipe.results["imported"][0]["Policy"]
+            +
+            "*Policy Name:* `%s` \n" % recipe.results["imported"][0]["Policy"]
         )
         print("1...")
         # Construct jamf pro URLs
         api = jamf.API()
         package_name = recipe.results["imported"][0]["Package"]
-        package_api_search = "packages/name/{name}".format(
-            name=package_name, base=JAMF_PRO_URL
-        ) 
+        package_api_search = f"packages/name/{package_name}"
         package = api.get(package_api_search)
         print("2...")
-        
+        return
+
         package_id = package["package"]["id"]
         package_url = "{base}/packages.html?id={id}".format(
             id=package_id, base=JAMF_PRO_URL
@@ -435,7 +435,7 @@ def teams_alert(recipe, opts):
         print("3...")
         policy_name = recipe.results["imported"][0]["Policy"]
         policy_api_search = "policies/name/{name}".format(
-            name=policy_name, base=JAMF_PRO_URL
+            name=policy_name
         )
         policy = api.get(policy_api_search)
         policy_id = policy["policy"]["general"]["id"]
