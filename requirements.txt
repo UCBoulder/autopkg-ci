@@ -1,5 +1,6 @@
 ###### Requirements without Version Specifiers ######
 requests
+setuptools
 python-jamf
 
 ###### Requirements with Version Specifiers ######
