@@ -63,8 +63,8 @@ jobs:
 
     - name: Configure python-jamf
       run: |
-        which pip3
-        which python3
+        ls -lah `which pip3`
+        ls -lah `which python3`
         ls -lah /Library/Frameworks/Python.framework/Versions
         head -10 /Library/Frameworks/Python.framework/Versions/current/bin/conf-python-jamf
         /Library/Frameworks/Python.framework/Versions/current/bin/conf-python-jamf --hostname "${{ secrets.JSS_URL }}" --user "${{ secrets.JSS_API_USERNAME }}" --passwd "${{ secrets.JSS_API_PASSWORD }}"
