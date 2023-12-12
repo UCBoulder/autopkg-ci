@@ -2,4 +2,4 @@
 requests
 
 ###### Requirements with Version Specifiers ######
-python-jamf == 0.8.3             # Version Matching. Must be version 0.8.2
+python-jamf == 0.8.3             # Version Matching. Must be version 0.8.3
