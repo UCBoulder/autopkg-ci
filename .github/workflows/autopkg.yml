@@ -63,7 +63,7 @@ jobs:
 
     - name: Configure python-jamf
       run: |
-        ls -lah /Library/Frameworks/Python.framework/Versions/current/lib
+        ls -lah /Library/Frameworks/Python.framework/Versions/current/lib/python3.12
         echo ${PYTHONPATH}
         python3 -c "import sys ; sys.path"
         /Library/Frameworks/Python.framework/Versions/current/bin/conf-python-jamf --hostname "${{ secrets.JSS_URL }}" --user "${{ secrets.JSS_API_USERNAME }}" --passwd "${{ secrets.JSS_API_PASSWORD }}"
