@@ -39,8 +39,6 @@ jobs:
     - name: python-jamf install
       run: |
         /Library/Frameworks/Python.framework/Versions/current/bin/pip3 install -r requirements.txt
-        /Library/Frameworks/Python.framework/Versions/current/bin/pip install -r requirements.txt
-
 
     - name:  AutoPkg Configuration
       run: |
@@ -70,6 +68,7 @@ jobs:
         ls -lah `which pip3`
         ls -lah `which python3`
         ls -lah /Library/Frameworks/Python.framework/Versions
+        ls -lah /Library/Frameworks/Python.framework/Versions/current/
         ls -lah /Library/Frameworks/Python.framework/Versions/current/bin
         head -10 /Library/Frameworks/Python.framework/Versions/current/bin/conf-python-jamf
         ls -lah /Library/Frameworks/Python.framework/Versions/3.12/bin/python
