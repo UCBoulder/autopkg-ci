@@ -39,6 +39,7 @@ jobs:
     - name: python-jamf install
       run: |
         pip3 install -r requirements.txt --break-system-packages
+        which conf-python-jamf
 
     - name:  AutoPkg Configuration
       run: |
