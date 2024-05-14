@@ -33,12 +33,12 @@ jobs:
 
     - name: coreutils install
       run: |
-        brew install coreutils
+        brew install coreutils pipx
 
 
     - name: python-jamf install
       run: |
-        pip3 install -r requirements.txt
+        pipx install -r requirements.txt
 
     - name:  AutoPkg Configuration
       run: |
