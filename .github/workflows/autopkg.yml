@@ -38,7 +38,7 @@ jobs:
 
     - name: python-jamf install
       run: |
-        pipx install -r requirements.txt
+        pipx install requirements.txt
 
     - name:  AutoPkg Configuration
       run: |
