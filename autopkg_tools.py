@@ -24,7 +24,7 @@ from datetime import datetime
 from optparse import OptionParser
 from pathlib import Path
 
-import jamf
+import python_jamf
 import requests
 
 DEBUG = False
