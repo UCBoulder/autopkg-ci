@@ -23,7 +23,7 @@ jobs:
 
     - name: Install AutoPkg
       run: |
-        curl -L https://github.com/autopkg/autopkg/releases/download/v2.4.1/autopkg-2.4.1.pkg --output /tmp/autopkg.pkg
+        curl -L https://github.com/autopkg/autopkg/releases/download/v2.7.3/autopkg-2.7.3.pkg --output /tmp/autopkg.pkg
         sudo installer -pkg /tmp/autopkg.pkg -target /
 
     - name: JSS importer install
