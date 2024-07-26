@@ -26,11 +26,6 @@ jobs:
         curl -L https://github.com/autopkg/autopkg/releases/download/v2.7.3/autopkg-2.7.3.pkg --output /tmp/autopkg.pkg
         sudo installer -pkg /tmp/autopkg.pkg -target /
 
-    - name: JSS importer install
-      run: |
-        curl -L https://github.com/jssimporter/JSSImporter/releases/download/v1.1.6/jssimporter-1.1.6.pkg --output /tmp/jssimporter.pkg
-        sudo installer -pkg /tmp/jssimporter.pkg -target /
-
     - name: coreutils install
       run: |
         brew install coreutils 
@@ -61,10 +56,6 @@ jobs:
         git config --global user.email "runner@githubactions.local"
         git config --global credential.helper store
         echo "https://${{ secrets.AUTOPKG_GITHUB_USER }}:${{ secrets.AUTOPKG_GITHUB_TOKEN }}@github.com" > ~/.git-credentials
-
-    - name: Configure python-jamf
-      run: |
-        conf-python-jamf --hostname "${{ secrets.JSS_URL }}" --user "${{ secrets.JSS_API_USERNAME }}" --passwd "${{ secrets.JSS_API_PASSWORD }}" --client no
 
     - name: Setup SSH
       run: |
