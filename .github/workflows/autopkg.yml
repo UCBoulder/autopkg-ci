@@ -127,12 +127,11 @@ jobs:
       if: env.TITLE
       run: |
         cd overrides
-        git fetch
         export BRANCH_NAME=trust-info-`date +'%Y-%m-%d'`
         git checkout -b $BRANCH_NAME
         git add .
         git commit -m "${{ env.TITLE }}"
-        git push -f -u --set-upstream origin $BRANCH_NAME
+        git push --set-upstream origin $BRANCH_NAME
         jq -n --arg title "${{ env.TITLE }}" \
               --arg body "$BODY" \
               --arg head "$BRANCH_NAME" \
