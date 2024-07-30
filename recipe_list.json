@@ -1,13 +1,13 @@
 [
-	"FirefoxPrefs.jss.recipe",
-	"GoogleBackupandSync.jss.recipe",
-	"GoogleChromeUcb.jss.recipe",
-	"Huddly.jss.recipe",
-	"R-Project.jss.recipe",
-	"Skype.jss.recipe",
-	"SkypeForBusiness.jss.recipe",
-	"VLC.jss.recipe",
-	"Wepa.jss.recipe",
-	"ZoomClientIT.jss.recipe",
-	"Zotero.jss.recipe"
+	"Microsoft_AutoUpdate_O365.jss.recipe",
+	"Microsoft_Defender_Rename.jss.recipe",
+	"Microsoft_Edge_Rename.jss.recipe",
+	"Microsoft_Excel_2019_Rename.jss.recipe",
+	"Microsoft_Office_2019_Suite.jss.recipe",
+	"Microsoft_OneDrive_Rename.jss.recipe",
+	"Microsoft_OneNote_2019_Rename.jss.recipe",
+	"Microsoft_Outlook_2019_Rename.jss.recipe",
+	"Microsoft_PowerPoint_2019_Rename.jss.recipe",
+	"Microsoft_Teams_O365_Rename.jss.recipe",
+	"Microsoft_Word_2019_Rename.jss.recipe"
 ]
