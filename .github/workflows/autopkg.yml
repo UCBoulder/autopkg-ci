@@ -127,7 +127,7 @@ jobs:
       if: env.TITLE
       run: |
         cd overrides
-        git pull origin main
+        git fetch
         export BRANCH_NAME=trust-info-`date +'%Y-%m-%d'`
         git checkout -b $BRANCH_NAME
         git add .
