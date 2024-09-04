@@ -3,4 +3,4 @@ requests
 setuptools
 
 ###### Requirements with Version Specifiers ######
-python-jamf == 0.8.3             # Version Matching. Must be version 0.8.3
+python-jamf == 0.9.9             # Version Matching.
