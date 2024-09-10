@@ -15,16 +15,22 @@ jobs:
   AutoPkg:
     runs-on: macos-latest
     timeout-minutes: 120 # Keeps your builds from running too long
-    steps:
-    - uses: actions/checkout@v2
-    - name: Setup upterm session
-      uses: lhotari/action-upterm@v1
-      with:
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Setup upterm session
+#      uses: lhotari/action-upterm@v1
+#      with:
         ## limits ssh access and adds the ssh public key for the user which triggered the workflow
-        limit-access-to-actor: true
+#        limit-access-to-actor: true
         ## limits ssh access and adds the ssh public keys of the listed GitHub users
-        limit-access-to-users: bdreno
-        
+#        limit-access-to-users: bdreno
+
+    - name: Clear free space
+      run: |
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /opt/ghc
+        sudo rm -rf "/usr/local/share/boost"
+        sudo rm -rf "$AGENT_TOOLSDIRECTORY"        
         
     - name: Checkout AutoPkg Continuous Integration
       uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # Pin SHA1 hash instead of version
