@@ -32,6 +32,8 @@ jobs:
         sudo rm -rf "/usr/local/share/boost"
         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
         sudo rm -rf /tmp/*
+        sudo rm -rf /Users/runner/*
+        sudo rm -rf /Users/runner/.*
         
     - name: Checkout AutoPkg Continuous Integration
       uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # Pin SHA1 hash instead of version
