@@ -33,6 +33,7 @@ jobs:
         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
         sudo rm -rf /tmp/*
         sudo rm -rf /Users/runner/runners
+        sudo du -g -d 1 /                                                                                                
 
         
     - name: Checkout AutoPkg Continuous Integration
