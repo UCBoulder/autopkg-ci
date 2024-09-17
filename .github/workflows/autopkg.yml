@@ -24,7 +24,7 @@ jobs:
         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
         sudo rm -rf /tmp/*
         sudo rm -rf /System/Volumes/Data/Users/runner/Library/Android
-        #sudo rm -rf /Users/runner/runners
+        sudo rm -rf /System/Volumes/Data/Users/runner/Library/Developer/CoreSimulator/Caches/*
+        sudo du -g -d 1 /System/Volumes/Data/Users/runner/Library/Developer/CoreSimulator/
         sudo df -g
-        sudo du -g -d 1 /System/Volumes/Data/Users/runner/Library/Developer/CoreSimulator
 
