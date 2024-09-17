@@ -23,9 +23,9 @@ jobs:
         sudo rm -rf "/usr/local/share/boost"
         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
         sudo rm -rf /tmp/*
-        sudo rm -rf /Users/runner/runners
+        #sudo rm -rf /Users/runner/runners
         sudo df  -g
-        sudo du -g -d 1 /                                                                                                
+        #sudo du -g -d 1 /                                                                                                
 
         
     - name: Checkout AutoPkg Continuous Integration
