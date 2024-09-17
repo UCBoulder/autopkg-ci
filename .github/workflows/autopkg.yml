@@ -25,5 +25,5 @@ jobs:
         sudo rm -rf /tmp/*
         #sudo rm -rf /Users/runner/runners
         sudo df -g
-        sudo du -g -d 1 /System/Volumes/Data/Users
+        sudo du -g -d 1 /System/Volumes/Data/Users/runner
 
