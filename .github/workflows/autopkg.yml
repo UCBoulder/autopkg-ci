@@ -25,6 +25,6 @@ jobs:
         sudo rm -rf /tmp/*
         sudo rm -rf /System/Volumes/Data/Users/runner/Library/Android
         sudo rm -rf /System/Volumes/Data/Users/runner/Library/Developer/CoreSimulator/Caches/*
-        sudo du -g -d 1 /System/Volumes/Data/Users/runner/
+        sudo du -g -d 1 /System/Volumes/Data/Library
         sudo df -g
 
