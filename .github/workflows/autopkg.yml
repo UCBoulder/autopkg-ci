@@ -23,7 +23,8 @@ jobs:
         sudo rm -rf "/usr/local/share/boost"
         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
         sudo rm -rf /tmp/*
+        sudo rm -rf /System/Volumes/Data/Users/runner/Library/Android
         #sudo rm -rf /Users/runner/runners
         sudo df -g
-        sudo du -g -d 1 /System/Volumes/Data/Users/runner/Library
+        sudo du -g -d 1 /System/Volumes/Data/Users/runner/Library/Developer
 
