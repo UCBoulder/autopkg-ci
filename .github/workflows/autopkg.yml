@@ -26,7 +26,129 @@ jobs:
         sudo rm -rf /System/Volumes/Data/Users/runner/Library/Android
         sudo rm -rf /System/Volumes/Data/Users/runner/Library/Developer/CoreSimulator/Caches/*
         sudo rm -rf /System/Volumes/Data/Library/Developer/CoreSimulator/Images/*.dmg
-        ls -lah /System/Volumes/Data/Library/Developer/CoreSimulator/Images
-        sudo du -g -d 1 /System/Volumes/Data/Library/Developer/CoreSimulator/Images
-        sudo df -g
 
+        
+    - name: Checkout AutoPkg Continuous Integration
+      uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # Pin SHA1 hash instead of version
+      with:
+        fetch-depth: 1
+
+    - name: Install AutoPkg
+      run: |
+        curl -L https://github.com/autopkg/autopkg/releases/download/v2.7.3/autopkg-2.7.3.pkg --output /tmp/autopkg.pkg
+        sudo installer -pkg /tmp/autopkg.pkg -target /
+
+    - name: coreutils install
+      run: |
+        brew install coreutils 
+
+
+    - name: python-jamf install
+      run: |
+        pip3 install -r requirements.txt --break-system-packages
+        which conf-python-jamf
+
+    - name:  AutoPkg Configuration
+      run: |
+        defaults write com.github.autopkg RECIPE_OVERRIDE_DIRS "$(pwd)"/overrides/
+        defaults write com.github.autopkg RECIPE_REPO_DIR "$(pwd)"/repos/
+        defaults write com.github.autopkg CACHE_DIR "$(pwd)"/cache/
+        defaults write com.github.autopkg FAIL_RECIPES_WITHOUT_TRUST_INFO -bool YES
+        defaults write com.github.autopkg JSS_URL "${{ secrets.JSS_URL }}"
+        defaults write com.github.autopkg API_USERNAME "${{ secrets.JSS_API_USERNAME }}"
+        defaults write com.github.autopkg API_PASSWORD "${{ secrets.JSS_API_PASSWORD }}"
+        defaults write com.github.autopkg GITHUB_TOKEN "${{ secrets.AUTOPKG_GITHUB_TOKEN }}"
+        /usr/libexec/PlistBuddy -c "Add :JSS_REPOS array" ~/Library/Preferences/com.github.autopkg.plist
+        /usr/libexec/PlistBuddy -c "Add :JSS_REPOS:0 dict" ~/Library/Preferences/com.github.autopkg.plist
+        /usr/libexec/PlistBuddy -c "Add :JSS_REPOS:0:type string CDP" ~/Library/Preferences/com.github.autopkg.plist
+
+    - name: Configure Git
+      run: |
+        git config --global user.name "runner"
+        git config --global user.email "runner@githubactions.local"
+        git config --global credential.helper store
+        echo "https://${{ secrets.AUTOPKG_GITHUB_USER }}:${{ secrets.AUTOPKG_GITHUB_TOKEN }}@github.com" > ~/.git-credentials
+
+    - name: Setup SSH
+      run: |
+        eval $(ssh-agent)
+        echo "${{ secrets.AUTOPKG_GITHUB_SSH_PRIV }}" > ~/.ssh/privKey
+        chmod 700 ~/.ssh
+        chmod 600 ~/.ssh/privKey
+        ssh-add -k ~/.ssh/privKey
+
+    - name: Setup Signing Key & API keychain entries
+      run: |
+        export PATH="/usr/local/opt/curl/bin/:${PATH}"
+        echo "${{ secrets.SIGNING_CERT_P112 }}" | base64 --decode --output cert.p12
+        KEYCHAIN_NAME=temp.keychain
+        KEYCHAIN_PASS=$(echo "$(date)""$RANDOM" | base64)
+        security create-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_NAME"
+        security set-keychain-settings -lut 21600 "$KEYCHAIN_NAME"
+        security unlock-keychain -p "$KEYCHAIN_PASS" "$KEYCHAIN_NAME"
+        security import cert.p12 -P ${{ secrets.SIGNING_CERT_PASS }} -A -t cert -f pkcs12 -k "$KEYCHAIN_NAME"
+        security list-keychain -d user -s "$KEYCHAIN_NAME"
+        security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASS" "$KEYCHAIN_NAME"
+        echo "Caching API credentials"
+        python3_bin=$(realpath `which python3`)
+        python3_app=$(echo ${python3_bin} | sed -e 's/bin\/python.*/Resources\/Python.app/g')
+        security add-generic-password -a ${{ secrets.JSS_API_USERNAME }} -s ${{ secrets.JSS_URL }} -w ${{ secrets.JSS_API_PASSWORD }} -T "${python3_app}" "$KEYCHAIN_NAME"
+        echo "Setting partition list"
+        security set-generic-password-partition-list -S apple-tool:,apple:,unsigned: -a ${{ secrets.JSS_API_USERNAME }} -k "$KEYCHAIN_PASS" "$KEYCHAIN_NAME"
+
+
+    - name: Add AutoPkg repos
+      run: |
+        for repo in $(cat repo_list.txt); do autopkg repo-add "$repo" && autopkg repo-update "$repo"; done
+
+    - name: Checkout autopkg cache repo
+      uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      with:
+        repository: ${{ secrets.AUTOPKG_CACHE_REPO }}
+        token: ${{ secrets.AUTOPKG_GITHUB_TOKEN }}
+        fetch-depth: 1
+        ref: refs/heads/main
+        path: cache
+
+    - name: Checkout your autopkg override repo
+      uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      with:
+        repository: ${{ secrets.AUTOPKG_OVERRIDES_REPO }}
+        token: ${{ secrets.AUTOPKG_GITHUB_TOKEN }}
+        fetch-depth: 1
+        ref: refs/heads/main
+        path: overrides
+
+
+    - name: Run AutoPkg
+      run: |
+        export PATH="/usr/local/opt/curl/bin/:${PATH}"
+        python3 autopkg_tools.py -l recipe_list.json
+        if [ -f pull_request_title ]; then
+        echo "TITLE=$(cat pull_request_title)" >> $GITHUB_ENV
+        echo "BODY<<EOF" >> $GITHUB_ENV
+        cat pull_request_body >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+        fi
+      env:
+        RECIPE: ${{ github.event.inputs.recipe }}
+        TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+        JAMF_PRO_URL: ${{ secrets.JSS_URL }}
+
+    - name: Create Trust Info pull request
+      if: env.TITLE
+      run: |
+        cd overrides
+        export BRANCH_NAME=trust-info-`date +'%Y-%m-%d'`
+        git checkout -b $BRANCH_NAME
+        git add .
+        git commit -m "${{ env.TITLE }}"
+        git push --set-upstream origin $BRANCH_NAME
+        jq -n --arg title "${{ env.TITLE }}" \
+              --arg body "$BODY" \
+              --arg head "$BRANCH_NAME" \
+           '{title: $title, body: $body, head: $head, "base": "${{ github.ref }}"}' | curl -s --request POST \
+           --url https://api.github.com/repos/${{ secrets.AUTOPKG_OVERRIDES_REPO }}/pulls \
+           --header 'authorization: Bearer ${{ secrets.AUTOPKG_GITHUB_TOKEN  }}' \
+           --header 'content-type: application/json' \
+           -d@-
