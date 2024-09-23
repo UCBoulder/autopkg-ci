@@ -16,6 +16,20 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 120 # Keeps your builds from running too long
     steps:
+
+    - name: Clear free space
+      run: |
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /opt/ghc
+        sudo rm -rf "/usr/local/share/boost"
+        sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+        sudo rm -rf /tmp/*
+        sudo rm -rf /System/Volumes/Data/Users/runner/Library/Android
+        sudo rm -rf /System/Volumes/Data/Users/runner/Library/Developer/CoreSimulator/Caches/*
+        sudo rm -rf /System/Volumes/Data/Library/Developer/CoreSimulator/Images/*.dmg
+
+        
+
     - name: Checkout AutoPkg Continuous Integration
       uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # Pin SHA1 hash instead of version
       with:
