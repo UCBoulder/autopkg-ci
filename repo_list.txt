@@ -24,3 +24,4 @@ sheagcraig-recipes
 timsutton-recipes
 triti-recipes
 wardsparadox-recipes
+grahampugh/jamf-upload
