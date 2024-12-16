@@ -1,11 +1,11 @@
 [
-	"Chrome-test.jamf.recipe.yaml",
-	"Defender-test.jamf.recipe.yaml",
-	"Huddly-test.jamf.recipe.yaml",
-	"OneDrive-test.jamf.recipe.yaml",
-	"Outlook-test.jamf.recipe.yaml",
-	"VLC_Universal-test.jamf.recipe.yaml",
-	"Wepa-test.jamf.recipe.yaml",
-	"Zoom-test.jamf.recipe.yaml",
-	"Zotero-test.jamf.recipe.yaml"
+	"Chrome-test.jamf",
+	"Defender-test.jamf",
+	"Huddly-test.jamf",
+	"OneDrive-test.jamf",
+	"Outlook-test.jamf",
+	"VLC_Universal-test.jamf",
+	"Wepa-test.jamf",
+	"Zoom-test.jamf",
+	"Zotero-test.jamf"
 ]
