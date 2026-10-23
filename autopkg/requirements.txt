@@ -1,7 +1,7 @@
 appdirs==1.4.3
 attrs==19.3.0
 black==26.3.1
-certifi==2024.7.4
+certifi==2026.10.19
 chardet==3.0.4
 Click==7.0
 idna==3.7
